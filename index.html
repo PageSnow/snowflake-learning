@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Snowflake Learning Hub</title>
+</head>
+<body style="font-family: Arial; padding: 40px;">
+
+  <h1>🚀 Snowflake Learning Hub</h1>
+  <p>Aprende Snowflake en español</p>
+
+  <select id="topic">
+    <option value="warehouse">Warehouse</option>
+    <option value="snowpipe">Snowpipe</option>
+    <option value="stream">Stream</option>
+  </select>
+
+  <button onclick="learn()">Aprender</button>
+
+  <p id="content"></p>
+
+  <script>
+    const data = {
+      warehouse: "Un Warehouse es el motor de cómputo en Snowflake.",
+      snowpipe: "Snowpipe permite cargar datos automáticamente.",
+      stream: "Stream permite capturar cambios en datos."
+    };
+
+    function learn() {
+      const topic = document.getElementById("topic").value;
+      document.getElementById("content").innerText = data[topic];
+    }
+  </script>
+
+</body>
+</html>
