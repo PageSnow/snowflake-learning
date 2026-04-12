@@ -480,6 +480,38 @@
       margin-top: 5px;
     }
     
+    .welcome-screen {
+      text-align: center;
+      padding: 60px 20px;
+    }
+    
+    .welcome-screen h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    
+    .feature-card {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+      transition: transform 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+    }
+    
     @media (max-width: 1024px) {
       .sql-workspace {
         grid-template-columns: 1fr;
@@ -498,6 +530,7 @@
   <input type="text" class="search-box" placeholder="🔍 Buscar ejercicio..." onkeyup="searchExercises(this.value)">
   
   <div class="category">Teoría</div>
+  <div class="nav-item" onclick="showWelcome(this)">🏠 Inicio</div>
   <div class="nav-item" onclick="loadTheory('intro', this)">📘 Introducción</div>
   <div class="nav-item" onclick="loadTheory('arquitectura', this)">🏗️ Arquitectura</div>
   
@@ -569,6 +602,58 @@ const sampleData = {
     { id: 2, usuario_id: 1, evento: "add_to_cart", pagina: "/productos/101", timestamp: "2024-04-10 10:05:00", metadata: '{"product_id": 101, "quantity": 1}' },
     { id: 3, usuario_id: 2, evento: "page_view", pagina: "/home", timestamp: "2024-04-10 11:00:00", metadata: '{"browser": "Firefox", "device": "mobile"}' }
   ]
+};
+
+// Contenido teórico
+const theoryData = {
+  intro: {
+    title: "Introducción a Snowflake",
+    tag: "Fundamentos",
+    content: `
+      <p>Snowflake es una plataforma de datos en la nube revolucionaria que separa completamente el almacenamiento del procesamiento. 
+      Esto permite escalar cada componente de forma independiente y pagar únicamente por lo que usas.</p>
+      
+      <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px;">
+        <strong>💡 Ventaja clave:</strong> A diferencia de las bases de datos tradicionales, Snowflake gestiona automáticamente 
+        la infraestructura, el tuning de rendimiento y la disponibilidad.
+      </div>
+      
+      <h3>Características principales:</h3>
+      <ul style="margin-left: 20px; line-height: 2;">
+        <li>Arquitectura multi-cluster compartida</li>
+        <li>Separación de almacenamiento y cómputo</li>
+        <li>Soporte nativo para datos semiestructurados (JSON, XML, Avro)</li>
+        <li>Time Travel y Fail-safe integrados</li>
+        <li>Zero-copy cloning</li>
+      </ul>
+    `
+  },
+  
+  arquitectura: {
+    title: "Arquitectura de Snowflake",
+    tag: "Fundamentos",
+    content: `
+      <p>La arquitectura de Snowflake tiene 3 capas distintas que trabajan en conjunto:</p>
+      
+      <div class="card" style="border-left: 4px solid #ff6b6b; margin: 15px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🏢 1. Capa de Almacenamiento</h3>
+        <p>Utiliza almacenamiento en cloud (AWS S3, Azure Blob, GCS). Los datos se organizan en 
+        <strong>micro-particiones</strong> de 50-500 MB comprimidas en columnar.</p>
+      </div>
+      
+      <div class="card" style="border-left: 4px solid #4ecdc4; margin: 15px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>⚡ 2. Capa de Cómputo (Virtual Warehouses)</h3>
+        <p>Múltiples clusters independientes que procesan consultas. Pueden escalar verticalmente 
+        (más recursos) u horizontalmente (más clusters).</p>
+      </div>
+      
+      <div class="card" style="border-left: 4px solid #45b7d1; margin: 15px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <h3>🎛️ 3. Capa de Servicios</h3>
+        <p>Gestiona autenticación, optimización de consultas, metadatos y control de acceso. 
+        Es el "cerebro" que coordina todo.</p>
+      </div>
+    `
+  }
 };
 
 // Banco de ejercicios SQL
@@ -1641,112 +1726,4 @@ CREATE TABLE analytics.user_events (
     processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
 );
 
--- 3. Stream para CDC
-CREATE STREAM raw_data.event_stream
-ON TABLE raw_data.events
-APPEND_ONLY = TRUE;
-
--- 4. Task de transformación
-CREATE TASK analytics.process_events
-WAREHOUSE = 'etl_wh'
-SCHEDULE = 'USING CRON 0 */6 * * * UTC' -- Cada 6 horas
-WHEN SYSTEM$STREAM_HAS_DATA('raw_data.event_stream')
-AS
-MERGE INTO analytics.user_events AS target
-USING (
-    SELECT 
-        event_id,
-        TRY_TO_NUMBER(user_id) as user_id,
-        event_type,
-        payload:session_id::STRING as session_id,
-        COALESCE(payload:device::STRING, 'unknown') as device_type,
-        payload:country::STRING as geo_country,
-        received_at as created_at
-    FROM raw_data.event_stream
-    WHERE event_id IS NOT NULL
-) AS source
-ON target.event_id = source.event_id
-WHEN NOT MATCHED THEN
-    INSERT (event_id, user_id, event_type, session_id, device_type, geo_country, created_at)
-    VALUES (source.event_id, source.user_id, source.event_type, source.session_id, source.device_type, source.geo_country, source.created_at);
-
--- 5. Activar pipeline
-ALTER TASK analytics.process_events RESUME;
-
--- 6. Vista para consumo (Data Mart)
-CREATE VIEW analytics.daily_events AS
-SELECT 
-    DATE_TRUNC('day', created_at) as fecha,
-    event_type,
-    device_type,
-    geo_country,
-    COUNT(*) as total_eventos,
-    COUNT(DISTINCT user_id) as usuarios_unicos,
-    COUNT(DISTINCT session_id) as sesiones
-FROM analytics.user_events
-GROUP BY 1, 2, 3, 4;`
-  }
-};
-
-let currentExercise = null;
-let exerciseProgress = JSON.parse(localStorage.getItem('sql_exercise_progress') || '{}');
-
-function loadExercise(exerciseId, element) {
-  currentExercise = exercises[exerciseId];
-  if (!currentExercise) return;
-  
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  if (element) element.classList.add('active');
-  
-  const isCompleted = exerciseProgress[exerciseId]?.completed;
-  const bestScore = exerciseProgress[exerciseId]?.bestScore || 0;
-  
-  const html = `
-    <div class="header">
-      <span class="tag sql">Laboratorio SQL</span>
-      <span class="difficulty-badge difficulty-${currentExercise.difficulty}">
-        ${currentExercise.difficulty === 'easy' ? 'Fácil' : 
-          currentExercise.difficulty === 'medium' ? 'Medio' : 
-          currentExercise.difficulty === 'hard' ? 'Difícil' : 'Experto'}
-      </span>
-      <h1>${currentExercise.title}</h1>
-      ${isCompleted ? '<span style="color: #4caf50; margin-left: 10px;">✅ Completado</span>' : ''}
-    </div>
-    
-    <div class="card sql-card">
-      <div class="exercise-description">
-        <h3>🎯 Objetivo</h3>
-        <p>${currentExercise.description}</p>
-        <p><strong>Contexto:</strong> ${currentExercise.context}</p>
-        
-        <h4 style="margin-top: 15px;">📋 Requisitos:</h4>
-        <ul class="exercise-objectives">
-          ${currentExercise.objectives.map(obj => `<li>${obj}</li>`).join('')}
-        </ul>
-      </div>
-      
-      <div class="table-schema">
-        <strong>📊 Esquema/Datos de referencia:</strong><br>
-        <pre style="margin-top: 10px; white-space: pre-wrap;">${currentExercise.schema}</pre>
-      </div>
-      
-      <div class="sql-workspace">
-        <div class="editor-panel">
-          <div class="editor-header">
-            <span>📝 Editor SQL</span>
-            <div>
-              <button class="btn-execute" onclick="executeSQL()">
-                ▶️ Ejecutar
-              </button>
-              <button class="btn-hint" onclick="toggleHint()">
-                💡 Pista
-              </button>
-              <button class="btn-solution" onclick="toggleSolution()">
-                👁️ Ver solución
-              </button>
-            </div>
-          </div>
-          <textarea class="sql-editor" id="sql-input" placeholder="Escribe tu código SQL aquí...">${currentExercise.startingCode}</textarea>
-        </div>
-        
-        <div class="results
+-- 
