@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Snowflake Learning Hub - Guía Completa en Español</title>
+  <title>Snowflake Learning Hub - Práctica Interactiva</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
@@ -84,7 +84,7 @@
       margin-left: 280px;
       flex: 1;
       padding: 40px;
-      max-width: 900px;
+      max-width: 1000px;
     }
     
     .header {
@@ -109,6 +109,8 @@
       margin-right: 10px;
     }
     
+    .tag.practice { background: #ff6b6b; }
+    
     .card {
       background: white;
       border-radius: 12px;
@@ -116,6 +118,11 @@
       margin-bottom: 25px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.07);
       border-left: 4px solid #00d4ff;
+    }
+    
+    .card.practice-card {
+      border-left-color: #ff6b6b;
+      background: linear-gradient(135deg, #fff 0%, #fff5f5 100%);
     }
     
     .card h2 {
@@ -173,7 +180,7 @@
       margin: 15px 0;
     }
     
-    .btn-next {
+    .btn-next, .btn-practice {
       background: #00d4ff;
       color: white;
       padding: 12px 30px;
@@ -182,10 +189,18 @@
       cursor: pointer;
       font-size: 1rem;
       margin-top: 20px;
+      margin-right: 10px;
       transition: transform 0.2s;
     }
     
-    .btn-next:hover { transform: translateY(-2px); }
+    .btn-practice {
+      background: #ff6b6b;
+    }
+    
+    .btn-next:hover, .btn-practice:hover { 
+      transform: translateY(-2px); 
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
     
     .progress-bar {
       width: 100%;
@@ -203,9 +218,233 @@
       transition: width 0.5s ease;
     }
     
+    /* Estilos para el modo práctica */
+    .quiz-container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #eee;
+    }
+    
+    .quiz-progress {
+      font-weight: bold;
+      color: #ff6b6b;
+    }
+    
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      color: #1a1a2e;
+      line-height: 1.6;
+    }
+    
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+    
+    .option {
+      padding: 15px 20px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .option:hover {
+      border-color: #00d4ff;
+      background: #f0f9ff;
+      transform: translateX(5px);
+    }
+    
+    .option.selected {
+      border-color: #00d4ff;
+      background: #e3f2fd;
+    }
+    
+    .option.correct {
+      border-color: #4caf50;
+      background: #e8f5e9;
+    }
+    
+    .option.incorrect {
+      border-color: #f44336;
+      background: #ffebee;
+    }
+    
+    .option-indicator {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid #ccc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+    }
+    
+    .option.selected .option-indicator {
+      background: #00d4ff;
+      border-color: #00d4ff;
+      color: white;
+    }
+    
+    .option.correct .option-indicator {
+      background: #4caf50;
+      border-color: #4caf50;
+      color: white;
+      content: "✓";
+    }
+    
+    .option.incorrect .option-indicator {
+      background: #f44336;
+      border-color: #f44336;
+      color: white;
+    }
+    
+    .code-input {
+      width: 100%;
+      min-height: 120px;
+      padding: 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+    
+    .code-input:focus {
+      outline: none;
+      border-color: #00d4ff;
+    }
+    
+    .feedback {
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      display: none;
+    }
+    
+    .feedback.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    
+    .feedback.correct {
+      background: #e8f5e9;
+      border-left: 4px solid #4caf50;
+      color: #2e7d32;
+    }
+    
+    .feedback.incorrect {
+      background: #ffebee;
+      border-left: 4px solid #f44336;
+      color: #c62828;
+    }
+    
+    .btn-check {
+      background: #4caf50;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-right: 10px;
+    }
+    
+    .btn-skip {
+      background: #9e9e9e;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    
+    .score-display {
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+    
+    .score-number {
+      font-size: 4rem;
+      font-weight: bold;
+      margin: 20px 0;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      margin: 5px;
+      font-size: 0.9rem;
+    }
+    
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .practice-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .tab {
+      padding: 10px 20px;
+      border: none;
+      background: #e0e0e0;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .tab.active {
+      background: #ff6b6b;
+      color: white;
+    }
+    
+    .difficulty-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    
+    .difficulty-easy { background: #c8e6c9; color: #2e7d32; }
+    .difficulty-medium { background: #fff9c4; color: #f57f17; }
+    .difficulty-hard { background: #ffcdd2; color: #c62828; }
+    
     @media (max-width: 768px) {
       .sidebar { width: 100%; position: relative; height: auto; }
-      .content { margin-left: 0; }
+      .content { margin-left: 0; padding: 20px; }
       body { flex-direction: column; }
     }
   </style>
@@ -227,20 +466,17 @@
   <div class="nav-item" onclick="load('schema', this)">📂 Schema</div>
   <div class="nav-item" onclick="load('table', this)">📊 Tables</div>
   <div class="nav-item" onclick="load('view', this)">👁️ Views</div>
-  <div class="nav-item" onclick="load('stage', this)">📥 Stages</div>
   
   <div class="category">Carga de Datos</div>
   <div class="nav-item" onclick="load('snowpipe', this)">🚀 Snowpipe</div>
-  <div class="nav-item" onclick="load('copy', this)">📤 COPY INTO</div>
   <div class="nav-item" onclick="load('stream', this)">🔄 Streams</div>
   
   <div class="category">Automatización</div>
   <div class="nav-item" onclick="load('task', this)">⏱️ Tasks</div>
   
-  <div class="category">Avanzado</div>
-  <div class="nav-item" onclick="load('time_travel', this)">⏳ Time Travel</div>
-  <div class="nav-item" onclick="load('snowpark', this)">🐍 Snowpark</div>
-  <div class="nav-item" onclick="load('security', this)">🔐 Seguridad</div>
+  <div class="category">Práctica</div>
+  <div class="nav-item" onclick="startPracticeMode(this)" style="background: rgba(255,107,107,0.2); color: #ff6b6b;">🎯 Modo Examen</div>
+  <div class="nav-item" onclick="viewMyProgress(this)">📊 Mi Progreso</div>
 </div>
 
 <div class="content">
@@ -254,7 +490,8 @@
 </div>
 
 <script>
-const data = {
+// Datos de contenido educativo
+const contentData = {
   intro: {
     title: "Introducción a Snowflake",
     tag: "Fundamentos",
@@ -275,7 +512,8 @@ const data = {
         <li>Time Travel y Fail-safe integrados</li>
         <li>Zero-copy cloning</li>
       </ul>
-    `
+    `,
+    hasPractice: true
   },
   
   arquitectura: {
@@ -301,12 +539,8 @@ const data = {
         <p>Gestiona autenticación, optimización de consultas, metadatos y control de acceso. 
         Es el "cerebro" que coordina todo.</p>
       </div>
-      
-      <div class="code-block">
-<span class="comment">-- Ver información de tu cuenta</span>
-<span class="highlight">SELECT</span> CURRENT_REGION(), CURRENT_ACCOUNT(), CURRENT_USER();
-      </div>
-    `
+    `,
+    hasPractice: true
   },
   
   warehouse: {
@@ -327,19 +561,17 @@ X-Small   → 1 nodo   (crédito/hora)
 Small     → 2 nodos  (2 créditos/hora)
 Medium    → 4 nodos  (4 créditos/hora)
 Large     → 8 nodos  (8 créditos/hora)
-X-Large   → 16 nodos (16 créditos/hora)
-...
-6X-Large  → 512 nodos (512 créditos/hora)
       </div>
       
       <div class="code-block">
 <span class="comment">-- Crear un warehouse</span>
 <span class="highlight">CREATE WAREHOUSE</span> mi_warehouse
   <span class="highlight">WITH</span> WAREHOUSE_SIZE = <span class="string">'SMALL'</span>
-  AUTO_SUSPEND = <span class="highlight">300</span>  <span class="comment">-- Suspender después de 5 min de inactividad</span>
+  AUTO_SUSPEND = <span class="highlight">300</span>
   AUTO_RESUME = <span class="highlight">TRUE</span>;
       </div>
-    `
+    `,
+    hasPractice: true
   },
   
   database: {
@@ -351,22 +583,11 @@ X-Large   → 16 nodos (16 créditos/hora)
       <div class="code-block">
 <span class="comment">-- Crear una base de datos</span>
 <span class="highlight">CREATE DATABASE</span> ventas_db;
-
-<span class="comment">-- Usar la base de datos</span>
 <span class="highlight">USE DATABASE</span> ventas_db;
-
-<span class="comment">-- Crear un schema</span>
 <span class="highlight">CREATE SCHEMA</span> raw_data;
-
-<span class="comment">-- Ver estructura</span>
-<span class="highlight">SHOW</span> SCHEMAS <span class="highlight">IN DATABASE</span> ventas_db;
       </div>
-      
-      <div class="info-box">
-        <strong>📌 Nota:</strong> Cada database tiene automáticamente los schemas: 
-        <code>PUBLIC</code>, <code>INFORMATION_SCHEMA</code> y <code>ACCOUNT_USAGE</code>
-      </div>
-    `
+    `,
+    hasPractice: true
   },
   
   table: {
@@ -376,29 +597,15 @@ X-Large   → 16 nodos (16 créditos/hora)
       <p>Snowflake soporta tablas permanentes, transitorias, temporales y externas.</p>
       
       <div class="code-block">
-<span class="comment">-- Tabla permanente (persiste después de la sesión)</span>
 <span class="highlight">CREATE TABLE</span> clientes (
     id <span class="highlight">NUMBER</span> AUTOINCREMENT,
     nombre <span class="highlight">VARCHAR</span>(100),
     email <span class="highlight">VARCHAR</span>(100),
-    fecha_registro <span class="highlight">TIMESTAMP DEFAULT</span> CURRENT_TIMESTAMP(),
-    datos_json <span class="highlight">VARIANT</span>  <span class="comment">-- Para JSON</span>
+    datos_json <span class="highlight">VARIANT</span>
 );
-
-<span class="comment">-- Tabla temporal (se elimina al finalizar sesión)</span>
-<span class="highlight">CREATE TEMPORARY TABLE</span> temp_ventas <span class="highlight">AS</span>
-<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> ventas <span class="highlight">WHERE</span> fecha >= <span class="string">'2024-01-01'</span>;
       </div>
-      
-      <h3>Tipos de datos comunes:</h3>
-      <ul style="margin-left: 20px; line-height: 2;">
-        <li><code>NUMBER(p,s)</code> - Numéricos con precisión</li>
-        <li><code>VARCHAR(n)</code> - Texto variable</li>
-        <li><code>TIMESTAMP_NTZ/TZ/LTZ</code> - Fechas y horas</li>
-        <li><code>VARIANT</code> - Datos semiestructurados</li>
-        <li><code>ARRAY</code> y <code>OBJECT</code> - Colecciones</li>
-      </ul>
-    `
+    `,
+    hasPractice: true
   },
   
   snowpipe: {
@@ -406,28 +613,17 @@ X-Large   → 16 nodos (16 créditos/hora)
     tag: "Carga de Datos",
     content: `
       <p>Snowpipe permite cargar datos automáticamente en tiempo casi real desde 
-      almacenamiento en cloud (S3, Azure, GCS) sin necesidad de usar COPY manualmente.</p>
+      almacenamiento en cloud sin necesidad de usar COPY manualmente.</p>
       
       <div class="code-block">
-<span class="comment">-- 1. Crear stage externo apuntando a S3</span>
-<span class="highlight">CREATE STAGE</span> mi_stage
-  URL = <span class="string">'s3://mi-bucket/datos/'</span>
-  STORAGE_INTEGRATION = aws_integration;
-
-<span class="comment">-- 2. Crear el pipe</span>
 <span class="highlight">CREATE PIPE</span> mi_pipe
-  AUTO_INGEST = <span class="highlight">TRUE</span>  <span class="comment">-- Detecta automáticamente nuevos archivos</span>
+  AUTO_INGEST = <span class="highlight">TRUE</span>
 <span class="highlight">AS</span>
 <span class="highlight">COPY INTO</span> mi_tabla
-<span class="highlight">FROM</span> @mi_stage
-FILE_FORMAT = (TYPE = <span class="string">'JSON'</span>);
+<span class="highlight">FROM</span> @mi_stage;
       </div>
-      
-      <div class="info-box">
-        <strong>🚀 Ventaja:</strong> Snowpipe usa recursos serverless, así que solo pagas 
-        por los segundos de procesamiento utilizados.
-      </div>
-    `
+    `,
+    hasPractice: true
   },
   
   stream: {
@@ -438,192 +634,879 @@ FILE_FORMAT = (TYPE = <span class="string">'JSON'</span>);
       procesamiento incremental (Change Data Capture).</p>
       
       <div class="code-block">
-<span class="comment">-- Crear un stream en una tabla</span>
 <span class="highlight">CREATE STREAM</span> stream_clientes
-<span class="highlight">ON TABLE</span> clientes
-APPEND_ONLY = <span class="highlight">FALSE</span>;  <span class="comment">-- Captura todos los cambios</span>
+<span class="highlight">ON TABLE</span> clientes;
 
-<span class="comment">-- Consultar cambios pendientes</span>
-<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> stream_clientes;
-
-<span class="comment">-- Columnas especiales del stream:</span>
-<span class="comment">-- METADATA$ACTION: INSERT o DELETE</span>
-<span class="comment">-- METADATA$ISUPDATE: TRUE si fue UPDATE</span>
-<span class="comment">-- METADATA$ROW_ID: ID único de la fila</span>
+<span class="comment">-- Columnas especiales:</span>
+<span class="comment">-- METADATA$ACTION, METADATA$ISUPDATE, METADATA$ROW_ID</span>
       </div>
-      
-      <div class="warning-box">
-        <strong>⚠️ Nota:</strong> Un stream se "consume" cuando se usa en una DML. 
-        Después de INSERT/UPDATE usando el stream, los datos desaparecen del stream.
-      </div>
-    `
+    `,
+    hasPractice: true
   },
   
   task: {
     title: "Tasks - Automatización SQL",
     tag: "Automatización",
     content: `
-      <p>Los Tasks permiten programar la ejecución de consultas SQL en horarios específicos 
-      o basados en eventos (como la finalización de otro task).</p>
+      <p>Los Tasks permiten programar la ejecución de consultas SQL.</p>
       
       <div class="code-block">
-<span class="comment">-- Task simple: ejecutar cada hora</span>
 <span class="highlight">CREATE TASK</span> tarea_horaria
   WAREHOUSE = <span class="string">'mi_warehouse'</span>
-  SCHEDULE = <span class="string">'USING CRON 0 * * * * UTC'</span>  <span class="comment">-- Cada hora</span>
+  SCHEDULE = <span class="string">'USING CRON 0 * * * * UTC'</span>
 <span class="highlight">AS</span>
-<span class="highlight">INSERT INTO</span> resumen_horario
-<span class="highlight">SELECT</span> DATE_TRUNC(<span class="string">'hour'</span>, fecha), <span class="highlight">COUNT</span>(*)
-<span class="highlight">FROM</span> eventos
-<span class="highlight">GROUP BY</span> 1;
-
-<span class="comment">-- Task dependiente (DAG)</span>
-<span class="highlight">CREATE TASK</span> tarea_secundaria
-  WAREHOUSE = <span class="string">'mi_warehouse'</span>
-  AFTER tarea_horaria  <span class="comment">-- Se ejecuta cuando termina la primera</span>
-<span class="highlight">AS</span>
-<span class="highlight">CALL</span> proceso_siguiente();
+<span class="highlight">INSERT INTO</span> resumen_horario <span class="highlight">SELECT</span> * <span class="highlight">FROM</span> ventas;
       </div>
-      
-      <div class="info-box">
-        <strong>💡 Tip:</strong> Combina Tasks + Streams para crear pipelines ELT 
-        completamente automáticos en Snowflake.
-      </div>
-    `
-  },
-  
-  time_travel: {
-    title: "Time Travel y Fail-Safe",
-    tag: "Avanzado",
-    content: `
-      <p>Snowflake mantiene automáticamente el historial de cambios de datos, 
-      permitiéndote "viajar en el tiempo" para recuperar versiones anteriores.</p>
-      
-      <div class="code-block">
-<span class="comment">-- Consultar datos de hace 2 horas</span>
-<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> mi_tabla <span class="highlight">AT</span> (OFFSET => -<span class="highlight">120</span> <span class="highlight">MINUTES</span>);
-
-<span class="comment">-- Consultar datos de ayer específico</span>
-<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> mi_tabla <span class="highlight">AT</span> (TIMESTAMP => <span class="string">'2024-01-15 10:00:00'</span>::timestamp);
-
-<span class="comment">-- Restaurar tabla eliminada (dentro de 24h)</span>
-<span class="highlight">UNDROP TABLE</span> mi_tabla;
-
-<span class="comment">-- Clonar tabla en punto anterior (zero-copy)</span>
-<span class="highlight">CREATE TABLE</span> tabla_backup <span class="highlight">CLONE</span> mi_tabla <span class="highlight">AT</span> (OFFSET => -<span class="highlight">86400</span>);
-      </div>
-      
-      <div class="warning-box">
-        <strong>⏰ Límites:</strong><br>
-        • Time Travel estándar: 1 día (Enterprise: hasta 90 días)<br>
-        • Fail-safe: 7 días adicionales (solo para recuperación por Soporte Snowflake)
-      </div>
-    `
-  },
-  
-  snowpark: {
-    title: "Snowpark - Python, Java, Scala",
-    tag: "Avanzado",
-    content: `
-      <p>Snowpark permite ejecutar código Python, Java o Scala directamente dentro de Snowflake, 
-      eliminando la necesidad de mover datos fuera de la plataforma.</p>
-      
-      <div class="code-block">
-<span class="comment">-- Crear UDF en Python</span>
-<span class="highlight">CREATE FUNCTION</span> limpiar_texto(texto <span class="highlight">STRING</span>)
-<span class="highlight">RETURNS STRING</span>
-<span class="highlight">LANGUAGE PYTHON</span>
-RUNTIME_VERSION = <span class="string">'3.8'</span>
-HANDLER = <span class="string">'clean'</span>
-<span class="highlight">AS</span> $$
-<span class="highlight">def</span> clean(text):
-    <span class="highlight">return</span> text.strip().lower().replace(<span class="string">'  '</span>, <span class="string">' '</span>)
-$$;
-
-<span class="comment">-- Usar la función</span>
-<span class="highlight">SELECT</span> limpiar_texto(<span class="string">'  HOLA   MUNDO  '</span>);  <span class="comment">-- Resultado: 'hola mundo'</span>
-      </div>
-      
-      <div class="info-box">
-        <strong>🐍 Ventajas de Snowpark:</strong><br>
-        • Procesamiento de datos sin moverlos (pushdown)<br>
-        • Acceso a librerías de Python como pandas, scikit-learn<br>
-        • Stored Procedures en tu lenguaje preferido<br>
-        • Integración con Notebooks (Snowflake Notebooks)
-      </div>
-    `
-  },
-  
-  security: {
-    title: "Seguridad y Gobierno",
-    tag: "Avanzado",
-    content: `
-      <p>Snowflake ofrece seguridad integral con RBAC (Control de Acceso Basado en Roles), 
-      encriptación automática y masking de datos.</p>
-      
-      <div class="code-block">
-<span class="comment">-- Crear rol y asignar permisos</span>
-<span class="highlight">CREATE ROLE</span> analista;
-<span class="highlight">GRANT USAGE ON DATABASE</span> ventas_db <span class="highlight">TO ROLE</span> analista;
-<span class="highlight">GRANT SELECT ON ALL TABLES IN SCHEMA</span> ventas_db.public <span class="highlight">TO ROLE</span> analista;
-
-<span class="comment">-- Masking de datos sensibles</span>
-<span class="highlight">CREATE MASKING POLICY</span> email_mask <span class="highlight">AS</span> (val <span class="highlight">STRING</span>) <span class="highlight">RETURNS STRING</span> ->
-  <span class="highlight">CASE</span>
-    <span class="highlight">WHEN</span> CURRENT_ROLE() <span class="highlight">IN</span> (<span class="string">'ADMIN'</span>) <span class="highlight">THEN</span> val
-    <span class="highlight">ELSE</span> REGEXP_REPLACE(val, <span class="string">'.+@'</span>, <span class="string">'***@'</span>)
-  <span class="highlight">END</span>;
-
-<span class="highlight">ALTER TABLE</span> clientes <span class="highlight">MODIFY COLUMN</span> email 
-<span class="highlight">SET MASKING POLICY</span> email_mask;
-      </div>
-      
-      <p>Características de seguridad adicionales:</p>
-      <ul style="margin-left: 20px; line-height: 2;">
-        <li>🔐 Encriptación en reposo y en tránsito (AES-256)</li>
-        <li>👥 Autenticación MFA y SSO (SAML 2.0, OAuth)</li>
-        <li>📊 Row Access Policies (control a nivel de fila)</li>
-        <li>🔍 Auditing completo via ACCOUNT_USAGE</li>
-        <li>🌐 PrivateLink para conectividad privada</li>
-      </ul>
-    `
+    `,
+    hasPractice: true
   }
 };
 
+// Banco de preguntas por tema
+const quizData = {
+  intro: [
+    {
+      type: "multiple",
+      question: "¿Cuál es la principal ventaja de la arquitectura de Snowflake?",
+      options: [
+        "Es más barata que otras bases de datos",
+        "Separa almacenamiento y cómputo para escalar independientemente",
+        "Solo funciona con datos estructurados",
+        "No requiere conexión a internet"
+      ],
+      correct: 1,
+      explanation: "Snowflake separa el almacenamiento (donde residen los datos) del cómputo (procesamiento de consultas), permitiendo escalar cada uno según necesidades específicas.",
+      difficulty: "easy"
+    },
+    {
+      type: "multiple",
+      question: "¿Qué tipos de datos semiestructurados soporta Snowflake nativamente?",
+      options: [
+        "Solo JSON",
+        "JSON, XML, Avro, Parquet, ORC",
+        "Solo CSV",
+        "Solo XML"
+      ],
+      correct: 1,
+      explanation: "Snowflake tiene soporte nativo para JSON, XML, Avro, Parquet y ORC mediante el tipo de datos VARIANT y funciones especiales de parsing.",
+      difficulty: "easy"
+    },
+    {
+      type: "truefalse",
+      question: "En Snowflake, el almacenamiento y el procesamiento están en el mismo servidor.",
+      correct: false,
+      explanation: "Falso. Snowflake utiliza una arquitectura de separación de recursos donde el almacenamiento (cloud storage) es independiente de los virtual warehouses (procesamiento).",
+      difficulty: "easy"
+    }
+  ],
+  
+  arquitectura: [
+    {
+      type: "multiple",
+      question: "¿Cuántas capas tiene la arquitectura de Snowflake?",
+      options: ["2 capas", "3 capas", "4 capas", "5 capas"],
+      correct: 1,
+      explanation: "Snowflake tiene 3 capas: Almacenamiento (Storage), Cómputo (Virtual Warehouses) y Servicios (Services).",
+      difficulty: "easy"
+    },
+    {
+      type: "multiple",
+      question: "¿Qué es una micro-partición en Snowflake?",
+      options: [
+        "Una tabla pequeña",
+        "Unidades de almacenamiento inmutables de 50-500 MB",
+        "Un tipo de índice",
+        "Un backup automático"
+      ],
+      correct: 1,
+      explanation: "Las micro-particiones son unidades inmutables de almacenamiento de 50-500 MB comprimidas en formato columnar que optimizan consultas.",
+      difficulty: "medium"
+    },
+    {
+      type: "code",
+      question: "Completa el comando para ver la región actual de tu cuenta:",
+      template: "SELECT ________();",
+      answer: ["current_region", "CURRENT_REGION"],
+      explanation: "CURRENT_REGION() es una función que retorna la región cloud donde está desplegada tu cuenta de Snowflake.",
+      difficulty: "medium"
+    }
+  ],
+  
+  warehouse: [
+    {
+      type: "multiple",
+      question: "¿Qué sucede cuando un warehouse está en modo AUTO_SUSPEND?",
+      options: [
+        "Se eliminan los datos",
+        "Se detiene automáticamente después de un período de inactividad",
+        "Solo permite lecturas",
+        "Se hace backup automático"
+      ],
+      correct: 1,
+      explanation: "AUTO_SUSPEND detiene el warehouse después de un tiempo sin actividad (en segundos), ahorrando créditos. Se puede reanudar con AUTO_RESUME.",
+      difficulty: "easy"
+    },
+    {
+      type: "multiple",
+      question: "Si tienes un warehouse Small y consumes 2 horas, ¿cuántos créditos gastas?",
+      options: ["1 crédito", "2 créditos", "4 créditos", "8 créditos"],
+      correct: 1,
+      explanation: "Un warehouse Small consume 2 créditos por hora. Por 2 horas serían 4 créditos totales.",
+      difficulty: "medium"
+    },
+    {
+      type: "code",
+      question: "Escribe el comando para crear un warehouse llamado 'analisis' de tamaño Medium que se suspenda después de 5 minutos:",
+      template: "",
+      answer: ["create warehouse analisis with warehouse_size='medium' auto_suspend=300", "CREATE WAREHOUSE analisis WITH WAREHOUSE_SIZE='MEDIUM' AUTO_SUSPEND=300"],
+      explanation: "La sintaxis requiere CREATE WAREHOUSE, especificar el tamaño (MEDIUM = 4 créditos/hora) y AUTO_SUSPEND en segundos (300 = 5 minutos).",
+      difficulty: "hard"
+    }
+  ],
+  
+  database: [
+    {
+      type: "multiple",
+      question: "¿Cuál es la jerarquía correcta de objetos en Snowflake?",
+      options: [
+        "Schema → Database → Table",
+        "Account → Database → Schema → Table",
+        "Database → Account → Schema → Table",
+        "Table → Schema → Database → Account"
+      ],
+      correct: 1,
+      explanation: "La jerarquía es: Account (cuenta) → Database → Schema → Objetos (tablas, vistas, etc.).",
+      difficulty: "easy"
+    },
+    {
+      type: "truefalse",
+      question: "Un schema en Snowflake es solo para organizar tablas, no puede contener vistas ni stored procedures.",
+      correct: false,
+      explanation: "Falso. Un schema puede contener tablas, vistas, stored procedures, UDFs, streams, tasks y otros objetos.",
+      difficulty: "easy"
+    }
+  ],
+  
+  table: [
+    {
+      type: "multiple",
+      question: "¿Qué tipo de tabla se elimina automáticamente al terminar la sesión?",
+      options: [
+        "Tabla permanente",
+        "Tabla temporal (TEMPORARY)",
+        "Tabla transitoria",
+        "External Table"
+      ],
+      correct: 1,
+      explanation: "Las tablas TEMPORARY solo existen durante la sesión actual y se eliminan automáticamente al cerrarla.",
+      difficulty: "easy"
+    },
+    {
+      type: "code",
+      question: "Completa la creación de una tabla con columna autoincremental:",
+      template: "CREATE TABLE productos (\n    id NUMBER ________,\n    nombre VARCHAR(100)\n);",
+      answer: ["autoincrement", "AUTOINCREMENT", "default autoincrement", "DEFAULT AUTOINCREMENT"],
+      explanation: "AUTOINCREMENT genera valores únicos automáticamente. También se puede usar DEFAULT AUTOINCREMENT.",
+      difficulty: "medium"
+    }
+  ],
+  
+  snowpipe: [
+    {
+      type: "multiple",
+      question: "¿Qué hace AUTO_INGEST = TRUE en un Pipe?",
+      options: [
+        "Comprime los archivos automáticamente",
+        "Detecta automáticamente nuevos archivos en el stage",
+        "Elimina archivos después de cargarlos",
+        "Convierte automáticamente formatos"
+      ],
+      correct: 1,
+      explanation: "AUTO_INGEST utiliza notificaciones de eventos (S3 Event Notifications, Event Grid, etc.) para detectar y cargar archivos nuevos automáticamente.",
+      difficulty: "medium"
+    },
+    {
+      type: "truefalse",
+      question: "Snowpipe requiere que un warehouse esté encendido constantemente para funcionar.",
+      correct: false,
+      explanation: "Falso. Snowpipe usa recursos serverless (gestionados por Snowflake), no requiere un warehouse virtual encendido.",
+      difficulty: "medium"
+    }
+  ],
+  
+  stream: [
+    {
+      type: "multiple",
+      question: "¿Qué columna especial indica si un registro en un Stream fue resultado de un UPDATE?",
+      options: [
+        "METADATA$ACTION",
+        "METADATA$ISUPDATE",
+        "METADATA$ROW_ID",
+        "METADATA$TIMESTAMP"
+      ],
+      correct: 1,
+      explanation: "METADATA$ISUPDATE es booleano (TRUE/FALSE) que indica si el cambio fue un UPDATE. METADATA$ACTION indica INSERT o DELETE.",
+      difficulty: "medium"
+    },
+    {
+      type: "code",
+      question: "Escribe el comando para crear un stream llamado 'cambios_clientes' sobre la tabla 'clientes':",
+      template: "",
+      answer: ["create stream cambios_clientes on table clientes", "CREATE STREAM cambios_clientes ON TABLE clientes"],
+      explanation: "La sintaxis básica es CREATE STREAM nombre ON TABLE tabla_origen.",
+      difficulty: "easy"
+    }
+  ],
+  
+  task: [
+    {
+      type: "multiple",
+      question: "¿Qué expresión CRON ejecuta un task todos los días a medianoche UTC?",
+      options: [
+        "0 0 * * *",
+        "0 * * * *",
+        "* * * * *",
+        "0 0 * * 0"
+      ],
+      correct: 0,
+      explanation: "0 0 * * * significa: minuto 0, hora 0 (medianoche), todos los días del mes, todos los meses, todos los días de la semana.",
+      difficulty: "hard"
+    },
+    {
+      type: "code",
+      question: "Completa el task para que se ejecute después del task 'task_a':",
+      template: "CREATE TASK task_b\n  WAREHOUSE = 'mi_wh'\n  ______ task_a\nAS\nINSERT INTO resumen SELECT * FROM ventas;",
+      answer: ["after", "AFTER"],
+      explanation: "AFTER crea una dependencia. Task_b se ejecutará automáticamente cuando task_a se complete exitosamente.",
+      difficulty: "medium"
+    }
+  ]
+};
+
 let currentTopic = 'intro';
-const totalTopics = Object.keys(data).length;
+let currentQuiz = null;
+let currentQuestionIndex = 0;
+let score = 0;
+let userAnswers = [];
 
 function load(topic, element) {
   currentTopic = topic;
-  const content = data[topic];
+  const content = contentData[topic];
   
-  // Actualizar navegación activa
   document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
   if (element) element.classList.add('active');
   
-  // Renderizar contenido
-  document.getElementById('content-area').innerHTML = `
+  let html = `
     <div class="header">
       <span class="tag">${content.tag}</span>
       <h1>${content.title}</h1>
     </div>
     <div class="card">
       ${content.content}
-      <button class="btn-next" onclick="nextTopic()">Siguiente tema →</button>
+      <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #eee;">
+        ${content.hasPractice ? `
+          <button class="btn-practice" onclick="startQuiz('${topic}')">
+            🎯 Practicar este tema
+          </button>
+        ` : ''}
+        <button class="btn-next" onclick="nextTopic()">Siguiente tema →</button>
+      </div>
     </div>
   `;
   
-  // Actualizar progreso
-  const topics = Object.keys(data);
-  const currentIndex = topics.indexOf(topic) + 1;
-  document.getElementById('progress').style.width = (currentIndex / totalTopics * 100) + '%';
+  document.getElementById('content-area').innerHTML = html;
   
-  // Scroll al inicio
+  // Actualizar progreso
+  const topics = Object.keys(contentData);
+  const currentIndex = topics.indexOf(topic) + 1;
+  document.getElementById('progress').style.width = (currentIndex / topics.length * 100) + '%';
+  
   window.scrollTo(0, 0);
 }
 
+function startQuiz(topic) {
+  currentQuiz = quizData[topic];
+  currentQuestionIndex = 0;
+  score = 0;
+  userAnswers = [];
+  
+  if (!currentQuiz || currentQuiz.length === 0) {
+    alert('Próximamente: Preguntas para este tema');
+    return;
+  }
+  
+  showQuestion();
+}
+
+function showQuestion() {
+  const question = currentQuiz[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / currentQuiz.length * 100).toFixed(0);
+  
+  let questionHtml = `
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <h2>🎯 Modo Práctica</h2>
+        <span class="quiz-progress">Pregunta ${currentQuestionIndex + 1} de ${currentQuiz.length}</span>
+      </div>
+      
+      <div class="progress-bar" style="margin-bottom: 20px;">
+        <div class="progress-fill" style="width: ${progress}%; background: linear-gradient(90deg, #ff6b6b, #ff8e8e);"></div>
+      </div>
+      
+      <div class="question">
+        ${question.question}
+        <span class="difficulty-badge difficulty-${question.difficulty}">
+          ${question.difficulty === 'easy' ? 'Fácil' : question.difficulty === 'medium' ? 'Medio' : 'Difícil'}
+        </span>
+      </div>
+  `;
+  
+  if (question.type === 'multiple') {
+    questionHtml += `<div class="options">`;
+    question.options.forEach((option, idx) => {
+      questionHtml += `
+        <div class="option" onclick="selectOption(${idx})" data-idx="${idx}">
+          <div class="option-indicator">${String.fromCharCode(65 + idx)}</div>
+          <div>${option}</div>
+        </div>
+      `;
+    });
+    questionHtml += `</div>`;
+  } else if (question.type === 'truefalse') {
+    questionHtml += `
+      <div class="options">
+        <div class="option" onclick="selectOption(true)" data-val="true">
+          <div class="option-indicator">V</div>
+          <div>Verdadero</div>
+        </div>
+        <div class="option" onclick="selectOption(false)" data-val="false">
+          <div class="option-indicator">F</div>
+          <div>Falso</div>
+        </div>
+      </div>
+    `;
+  } else if (question.type === 'code') {
+    questionHtml += `
+      <div style="margin-bottom: 15px;">
+        <textarea class="code-input" id="code-answer" placeholder="Escribe tu respuesta SQL aquí...">${question.template || ''}</textarea>
+      </div>
+    `;
+  }
+  
+  questionHtml += `
+      <div style="margin-top: 20px;">
+        <button class="btn-check" onclick="checkAnswer()">Verificar respuesta</button>
+        <button class="btn-skip" onclick="skipQuestion()">Saltar</button>
+      </div>
+      
+      <div id="feedback" class="feedback">
+        <strong id="feedback-title"></strong><br>
+        <span id="feedback-text"></span>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('content-area').innerHTML = questionHtml;
+}
+
+let selectedOption = null;
+
+function selectOption(idx) {
+  selectedOption = idx;
+  document.querySelectorAll('.option').forEach(el => el.classList.remove('selected'));
+  document.querySelector(`[data-idx="${idx}"]`)?.classList.add('selected');
+  document.querySelector(`[data-val="${idx}"]`)?.classList.add('selected');
+}
+
+function checkAnswer() {
+  const question = currentQuiz[currentQuestionIndex];
+  let isCorrect = false;
+  let userAnswer = null;
+  
+  if (question.type === 'multiple') {
+    if (selectedOption === null) {
+      alert('Por favor selecciona una opción');
+      return;
+    }
+    isCorrect = selectedOption === question.correct;
+    userAnswer = selectedOption;
+  } else if (question.type === 'truefalse') {
+    if (selectedOption === null) {
+      alert('Por favor selecciona Verdadero o Falso');
+      return;
+    }
+    isCorrect = selectedOption === question.correct;
+    userAnswer = selectedOption;
+  } else if (question.type === 'code') {
+    const codeAnswer = document.getElementById('code-answer').value.trim().toLowerCase();
+    userAnswer = codeAnswer;
+    isCorrect = question.answer.some(ans => codeAnswer.includes(ans.toLowerCase()));
+  }
+  
+  userAnswers.push({
+    question: question.question,
+    correct: isCorrect,
+    userAnswer: userAnswer
+  });
+  
+  // Mostrar feedback
+  const feedback = document.getElementById('feedback');
+  const feedbackTitle = document.getElementById('feedback-title');
+  const feedbackText = document.getElementById('feedback-text');
+  
+  feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+  feedbackTitle.textContent = isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto';
+  feedbackText.textContent = question.explanation;
+  
+  if (isCorrect) score++;
+  
+  // Marcar opciones visualmente
+  if (question.type === 'multiple' || question.type === 'truefalse') {
+    document.querySelectorAll('.option').forEach((el, idx) => {
+      const optionIdx = question.type === 'truefalse' ? 
+        (el.getAttribute('data-val') === 'true') : 
+        parseInt(el.getAttribute('data-idx'));
+      
+      if (optionIdx === question.correct) {
+        el.classList.add('correct');
+      } else if (optionIdx === userAnswer && !isCorrect) {
+        el.classList.add('incorrect');
+      }
+    });
+  }
+  
+  // Cambiar botón a "Siguiente"
+  const btnCheck = document.querySelector('.btn-check');
+  btnCheck.textContent = currentQuestionIndex < currentQuiz.length - 1 ? 'Siguiente pregunta →' : 'Ver resultados';
+  btnCheck.onclick = nextQuestion;
+  
+  // Deshabilitar selección
+  document.querySelectorAll('.option').forEach(el => {
+    el.style.pointerEvents = 'none';
+  });
+  if (document.getElementById('code-answer')) {
+    document.getElementById('code-answer').readOnly = true;
+  }
+}
+
+function skipQuestion() {
+  userAnswers.push({
+    question: currentQuiz[currentQuestionIndex].question,
+    correct: false,
+    skipped: true
+  });
+  nextQuestion();
+}
+
+function nextQuestion() {
+  currentQuestionIndex++;
+  selectedOption = null;
+  
+  if (currentQuestionIndex < currentQuiz.length) {
+    showQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  const percentage = Math.round((score / currentQuiz.length) * 100);
+  let badge = '';
+  let message = '';
+  
+  if (percentage >= 90) {
+    badge = '🏆 Experto Snowflake';
+    message = '¡Excelente! Dominas este tema a la perfección.';
+  } else if (percentage >= 70) {
+    badge = '⭐ Proficiente';
+    message = '¡Muy bien! Tienes buenos conocimientos, pero hay margen de mejora.';
+  } else if (percentage >= 50) {
+    badge = '📚 En progreso';
+    message = 'Vas por buen camino. Revisa los conceptos que te faltaron.';
+  } else {
+    badge = '🔄 Necesitas práctica';
+    message = 'Te recomendamos revisar el material teórico nuevamente.';
+  }
+  
+  let wrongAnswersHtml = '';
+  const wrongAnswers = userAnswers.filter(a => !a.correct && !a.skipped);
+  if (wrongAnswers.length > 0) {
+    wrongAnswersHtml = `
+      <div style="margin-top: 30px; text-align: left;">
+        <h3 style="margin-bottom: 15px;">📋 Revisar errores:</h3>
+        ${wrongAnswers.map((ans, idx) => `
+          <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 3px solid #f44336;">
+            <strong>${idx + 1}. ${ans.question}</strong>
+            <p style="margin-top: 5px; color: #666;">Tu respuesta fue incorrecta. Revisa la explicación en la pregunta anterior.</p>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  
+  const html = `
+    <div class="quiz-container">
+      <div class="score-display">
+        <h2>¡Práctica completada!</h2>
+        <div class="score-number">${percentage}%</div>
+        <p>Acertaste ${score} de ${currentQuiz.length} preguntas</p>
+        <div class="badge">${badge}</div>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <p style="font-size: 1.1rem; color: #555;">${message}</p>
+      </div>
+      
+      ${wrongAnswersHtml}
+      
+      <div style="text-align: center; margin-top: 30px;">
+        <button class="btn-practice" onclick="startQuiz('${currentTopic}')">🔄 Reintentar quiz</button>
+        <button class="btn-next" onclick="load('${currentTopic}', document.querySelector('.nav-item.active'))">
+          ← Volver al contenido
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('content-area').innerHTML = html;
+  
+  // Guardar progreso en localStorage
+  saveProgress(currentTopic, percentage);
+}
+
+function saveProgress(topic, score) {
+  let progress = JSON.parse(localStorage.getItem('snowflake_progress') || '{}');
+  if (!progress[topic] || progress[topic] < score) {
+    progress[topic] = score;
+    localStorage.setItem('snowflake_progress', JSON.stringify(progress));
+  }
+}
+
+function viewMyProgress(element) {
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  if (element) element.classList.add('active');
+  
+  const progress = JSON.parse(localStorage.getItem('snowflake_progress') || '{}');
+  const topics = Object.keys(contentData);
+  
+  let progressHtml = `
+    <div class="header">
+      <span class="tag practice">Progreso</span>
+      <h1>📊 Mi Progreso de Aprendizaje</h1>
+    </div>
+    <div class="card">
+  `;
+  
+  if (Object.keys(progress).length === 0) {
+    progressHtml += `
+      <p style="text-align: center; color: #999; padding: 40px;">
+        Aún no has completado ningún quiz. ¡Empieza a practicar para ver tu progreso!
+      </p>
+    `;
+  } else {
+    progressHtml += `<div style="display: grid; gap: 15px;">`;
+    topics.forEach(topic => {
+      const score = progress[topic];
+      const content = contentData[topic];
+      if (content && score !== undefined) {
+        const color = score >= 70 ? '#4caf50' : score >= 50 ? '#ff9800' : '#f44336';
+        progressHtml += `
+          <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+            <div>
+              <strong>${content.title}</strong>
+              <span style="color: #999; font-size: 0.9rem; margin-left: 10px;">${content.tag}</span>
+            </div>
+            <div style="font-weight: bold; color: ${color}; font-size: 1.2rem;">
+              ${score}%
+            </div>
+          </div>
+        `;
+      }
+    });
+    progressHtml += `</div>`;
+    
+    // Calcular progreso general
+    const avgScore = Object.values(progress).reduce((a, b) => a + b, 0) / Object.values(progress).length;
+    progressHtml += `
+      <div style="margin-top: 30px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 12px; text-align: center;">
+        <h3>Progreso General</h3>
+        <div style="font-size: 3rem; font-weight: bold; margin: 10px 0;">${Math.round(avgScore)}%</div>
+        <p>Has completado ${Object.keys(progress).length} de ${topics.length} temas</p>
+      </div>
+    `;
+  }
+  
+  progressHtml += `
+      <button class="btn-next" onclick="load('intro', document.querySelector('[onclick=\\'load(\\'intro\\', this)\\']'))" style="margin-top: 20px;">
+        ← Volver al inicio
+      </button>
+    </div>
+  `;
+  
+  document.getElementById('content-area').innerHTML = progressHtml;
+  document.getElementById('progress').style.width = '100%';
+}
+
+function startPracticeMode(element) {
+  // Modo examen: mezcla preguntas de todos los temas
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  if (element) element.classList.add('active');
+  
+  // Combinar todas las preguntas
+  let allQuestions = [];
+  Object.keys(quizData).forEach(topic => {
+    quizData[topic].forEach(q => {
+      allQuestions.push({...q, topic: topic});
+    });
+  });
+  
+  // Mezclar aleatoriamente y tomar 10
+  allQuestions = allQuestions.sort(() => 0.5 - Math.random()).slice(0, 10);
+  
+  currentQuiz = allQuestions;
+  currentQuestionIndex = 0;
+  score = 0;
+  userAnswers = [];
+  
+  showExamQuestion();
+}
+
+function showExamQuestion() {
+  const question = currentQuiz[currentQuestionIndex];
+  const progress = ((currentQuestionIndex + 1) / currentQuiz.length * 100).toFixed(0);
+  
+  let questionHtml = `
+    <div class="quiz-container">
+      <div class="quiz-header">
+        <h2>🎓 Modo Examen Global</h2>
+        <span class="quiz-progress">Pregunta ${currentQuestionIndex + 1} de ${currentQuiz.length}</span>
+      </div>
+      
+      <div class="progress-bar" style="margin-bottom: 20px;">
+        <div class="progress-fill" style="width: ${progress}%; background: linear-gradient(90deg, #667eea, #764ba2);"></div>
+      </div>
+      
+      <div style="margin-bottom: 10px; color: #666; font-size: 0.9rem;">
+        Tema: ${contentData[question.topic]?.title || question.topic}
+      </div>
+      
+      <div class="question">
+        ${question.question}
+        <span class="difficulty-badge difficulty-${question.difficulty}">
+          ${question.difficulty === 'easy' ? 'Fácil' : question.difficulty === 'medium' ? 'Medio' : 'Difícil'}
+        </span>
+      </div>
+  `;
+  
+  if (question.type === 'multiple') {
+    questionHtml += `<div class="options">`;
+    question.options.forEach((option, idx) => {
+      questionHtml += `
+        <div class="option" onclick="selectOption(${idx})" data-idx="${idx}">
+          <div class="option-indicator">${String.fromCharCode(65 + idx)}</div>
+          <div>${option}</div>
+        </div>
+      `;
+    });
+    questionHtml += `</div>`;
+  } else if (question.type === 'truefalse') {
+    questionHtml += `
+      <div class="options">
+        <div class="option" onclick="selectOption(true)" data-val="true">
+          <div class="option-indicator">V</div>
+          <div>Verdadero</div>
+        </div>
+        <div class="option" onclick="selectOption(false)" data-val="false">
+          <div class="option-indicator">F</div>
+          <div>Falso</div>
+        </div>
+      </div>
+    `;
+  } else if (question.type === 'code') {
+    questionHtml += `
+      <div style="margin-bottom: 15px;">
+        <textarea class="code-input" id="code-answer" placeholder="Escribe tu respuesta SQL aquí...">${question.template || ''}</textarea>
+      </div>
+    `;
+  }
+  
+  questionHtml += `
+      <div style="margin-top: 20px;">
+        <button class="btn-check" onclick="checkExamAnswer()" style="background: #667eea;">Verificar respuesta</button>
+        <button class="btn-skip" onclick="skipExamQuestion()">Saltar</button>
+      </div>
+      
+      <div id="feedback" class="feedback">
+        <strong id="feedback-title"></strong><br>
+        <span id="feedback-text"></span>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('content-area').innerHTML = questionHtml;
+}
+
+function checkExamAnswer() {
+  const question = currentQuiz[currentQuestionIndex];
+  let isCorrect = false;
+  let userAnswer = null;
+  
+  if (question.type === 'multiple') {
+    if (selectedOption === null) {
+      alert('Por favor selecciona una opción');
+      return;
+    }
+    isCorrect = selectedOption === question.correct;
+    userAnswer = selectedOption;
+  } else if (question.type === 'truefalse') {
+    if (selectedOption === null) {
+      alert('Por favor selecciona Verdadero o Falso');
+      return;
+    }
+    isCorrect = selectedOption === question.correct;
+    userAnswer = selectedOption;
+  } else if (question.type === 'code') {
+    const codeAnswer = document.getElementById('code-answer').value.trim().toLowerCase();
+    userAnswer = codeAnswer;
+    isCorrect = question.answer.some(ans => codeAnswer.includes(ans.toLowerCase()));
+  }
+  
+  userAnswers.push({
+    question: question.question,
+    correct: isCorrect,
+    userAnswer: userAnswer,
+    topic: question.topic
+  });
+  
+  if (isCorrect) score++;
+  
+  const feedback = document.getElementById('feedback');
+  const feedbackTitle = document.getElementById('feedback-title');
+  const feedbackText = document.getElementById('feedback-text');
+  
+  feedback.className = 'feedback show ' + (isCorrect ? 'correct' : 'incorrect');
+  feedbackTitle.textContent = isCorrect ? '✅ ¡Correcto!' : '❌ Incorrecto';
+  feedbackText.textContent = question.explanation;
+  
+  if (question.type === 'multiple' || question.type === 'truefalse') {
+    document.querySelectorAll('.option').forEach((el, idx) => {
+      const optionIdx = question.type === 'truefalse' ? 
+        (el.getAttribute('data-val') === 'true') : 
+        parseInt(el.getAttribute('data-idx'));
+      
+      if (optionIdx === question.correct) {
+        el.classList.add('correct');
+      } else if (optionIdx === userAnswer && !isCorrect) {
+        el.classList.add('incorrect');
+      }
+    });
+  }
+  
+  const btnCheck = document.querySelector('.btn-check');
+  btnCheck.textContent = currentQuestionIndex < currentQuiz.length - 1 ? 'Siguiente pregunta →' : 'Ver resultados del examen';
+  btnCheck.onclick = nextExamQuestion;
+  
+  document.querySelectorAll('.option').forEach(el => {
+    el.style.pointerEvents = 'none';
+  });
+  if (document.getElementById('code-answer')) {
+    document.getElementById('code-answer').readOnly = true;
+  }
+}
+
+function skipExamQuestion() {
+  userAnswers.push({
+    question: currentQuiz[currentQuestionIndex].question,
+    correct: false,
+    skipped: true,
+    topic: currentQuiz[currentQuestionIndex].topic
+  });
+  nextExamQuestion();
+}
+
+function nextExamQuestion() {
+  currentQuestionIndex++;
+  selectedOption = null;
+  
+  if (currentQuestionIndex < currentQuiz.length) {
+    showExamQuestion();
+  } else {
+    showExamResults();
+  }
+}
+
+function showExamResults() {
+  const percentage = Math.round((score / currentQuiz.length) * 100);
+  let badge = '';
+  let message = '';
+  
+  if (percentage >= 90) {
+    badge = '🎓 Arquitecto Snowflake Certificado';
+    message = '¡Impresionante! Tienes conocimientos avanzados de Snowflake.';
+  } else if (percentage >= 70) {
+    badge = '💼 Snowflake Developer';
+    message = '¡Muy bien! Estás listo para trabajar con Snowflake en producción.';
+  } else if (percentage >= 50) {
+    badge = '📖 Snowflake Associate';
+    message = 'Buena base, pero necesitas más práctica en algunos temas.';
+  } else {
+    badge = '🌱 Principiante';
+    message = 'Te recomendamos estudiar más antes de presentar un examen real.';
+  }
+  
+  // Análisis por tema
+  const topicAnalysis = {};
+  userAnswers.forEach(ans => {
+    if (!topicAnalysis[ans.topic]) topicAnalysis[ans.topic] = { correct: 0, total: 0 };
+    topicAnalysis[ans.topic].total++;
+    if (ans.correct) topicAnalysis[ans.topic].correct++;
+  });
+  
+  let topicHtml = '<div style="margin: 20px 0; text-align: left;"><h3>Desglose por tema:</h3>';
+  Object.keys(topicAnalysis).forEach(topic => {
+    const t = topicAnalysis[topic];
+    const pct = Math.round((t.correct / t.total) * 100);
+    const color = pct >= 70 ? '#4caf50' : pct >= 50 ? '#ff9800' : '#f44336';
+    topicHtml += `
+      <div style="display: flex; justify-content: space-between; margin: 10px 0; padding: 10px; background: white; border-radius: 8px;">
+        <span>${contentData[topic]?.title || topic}</span>
+        <span style="color: ${color}; font-weight: bold;">${t.correct}/${t.total} (${pct}%)</span>
+      </div>
+    `;
+  });
+  topicHtml += '</div>';
+  
+  const html = `
+    <div class="quiz-container">
+      <div class="score-display" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <h2>🎉 Examen Completado</h2>
+        <div class="score-number">${percentage}%</div>
+        <p>Acertaste ${score} de ${currentQuiz.length} preguntas</p>
+        <div class="badge">${badge}</div>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <p style="font-size: 1.1rem; color: #555;">${message}</p>
+      </div>
+      
+      ${topicHtml}
+      
+      <div style="text-align: center; margin-top: 30px;">
+        <button class="btn-practice" onclick="startPracticeMode(document.querySelector('[onclick=\\'startPracticeMode(this)\\']'))" style="background: #667eea;">
+          🔄 Nuevo examen
+        </button>
+        <button class="btn-next" onclick="viewMyProgress(document.querySelector('[onclick=\\'viewMyProgress(this)\\']'))">
+          Ver mi progreso
+        </button>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('content-area').innerHTML = html;
+}
+
 function nextTopic() {
-  const topics = Object.keys(data);
+  const topics = Object.keys(contentData);
   const currentIndex = topics.indexOf(currentTopic);
   if (currentIndex < topics.length - 1) {
     const nextTopic = topics[currentIndex + 1];
