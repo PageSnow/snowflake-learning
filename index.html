@@ -4,131 +4,554 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Snowflake Learning Hub - Laboratorio SQL</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
-    /* Todos los estilos CSS anteriores se mantienen igual */
+    :root {
+      --bg: #0d0f1a;
+      --sidebar-bg: #0a0c16;
+      --card-bg: #131625;
+      --card-border: #1e2340;
+      --accent: #29d4f5;
+      --accent2: #7c6af7;
+      --accent3: #f7c948;
+      --success: #3ddc84;
+      --danger: #ff5e5e;
+      --text: #e2e8f8;
+      --text-muted: #7a82a8;
+      --easy: #3ddc84;
+      --medium: #f7c948;
+      --hard: #ff9a5c;
+      --expert: #ff5e5e;
+    }
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
-    body { 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+    body {
+      font-family: 'Sora', sans-serif;
       display: flex;
       min-height: 100vh;
-      background: #f5f7fa;
-      color: #2c3e50;
+      background: var(--bg);
+      color: var(--text);
     }
-    
+
+    /* ── SIDEBAR ── */
     .sidebar {
-      width: 300px;
-      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
-      color: white;
+      width: 280px;
+      background: var(--sidebar-bg);
       height: 100vh;
       position: fixed;
       overflow-y: auto;
-      padding: 25px 20px;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+      padding: 24px 16px;
+      border-right: 1px solid var(--card-border);
+      scrollbar-width: thin;
+      scrollbar-color: var(--card-border) transparent;
     }
-    
-    /* ... (todos los demás estilos se mantienen igual) ... */
-    
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 8px 24px;
+      border-bottom: 1px solid var(--card-border);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .search-box {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      color: var(--text);
+      font-family: 'Sora', sans-serif;
+      font-size: 0.82rem;
+      margin-bottom: 20px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-box:focus { border-color: var(--accent); }
+
+    .category {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      padding: 14px 8px 6px;
+      margin-top: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      transition: all 0.15s;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover {
+      background: var(--card-bg);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(41,212,245,0.12), rgba(124,106,247,0.08));
+      color: var(--accent);
+      border-left: 3px solid var(--accent);
+    }
+
+    /* ── MAIN CONTENT ── */
+    .content {
+      margin-left: 280px;
+      flex: 1;
+      padding: 36px 40px;
+      max-width: calc(100vw - 280px);
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+
+    .tag {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .tag-sql { background: rgba(41,212,245,0.12); color: var(--accent); border: 1px solid rgba(41,212,245,0.25); }
+    .tag-lab { background: rgba(124,106,247,0.12); color: var(--accent2); border: 1px solid rgba(124,106,247,0.25); }
+    .tag-theory { background: rgba(247,201,72,0.12); color: var(--accent3); border: 1px solid rgba(247,201,72,0.25); }
+
+    .difficulty-badge {
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .difficulty-easy    { background: rgba(61,220,132,0.15); color: var(--easy); }
+    .difficulty-medium  { background: rgba(247,201,72,0.15); color: var(--medium); }
+    .difficulty-hard    { background: rgba(255,154,92,0.15); color: var(--hard); }
+    .difficulty-expert  { background: rgba(255,94,94,0.15);  color: var(--expert); }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .card h3 { font-size: 1rem; margin-bottom: 10px; color: var(--accent); }
+
+    .info-box {
+      background: rgba(41,212,245,0.07);
+      border-left: 3px solid var(--accent);
+      padding: 14px 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 14px 0;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+
+    .arch-card {
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin: 12px 0;
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .arch-red   { border-left: 4px solid #ff6b6b; background: rgba(255,107,107,0.06); }
+    .arch-teal  { border-left: 4px solid #4ecdc4; background: rgba(78,205,196,0.06); }
+    .arch-blue  { border-left: 4px solid var(--accent); background: rgba(41,212,245,0.06); }
+
+    /* ── WELCOME SCREEN ── */
+    .welcome-screen { text-align: center; padding: 40px 20px; }
+    .welcome-screen h1 { font-size: 2.4rem; font-weight: 700; margin-bottom: 12px; }
+    .welcome-screen > p { color: var(--text-muted); font-size: 1.05rem; margin-bottom: 36px; }
+
+    .stats-panel {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px 32px;
+      text-align: center;
+      min-width: 120px;
+    }
+
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      text-align: left;
+      transition: border-color 0.2s;
+    }
+
+    .feature-card:hover { border-color: var(--accent); }
+    .feature-card h3 { font-size: 0.95rem; margin-bottom: 8px; }
+    .feature-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── EXERCISE ── */
+    .exercise-description {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+
+    .exercise-description h3 { color: var(--accent); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .exercise-description p { font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 16px; }
+    .exercise-objectives { padding-left: 20px; }
+    .exercise-objectives li { font-size: 0.88rem; line-height: 2; color: var(--text); }
+
+    .table-schema {
+      background: #0a0c16;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #a0aec0;
+      margin-bottom: 20px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    /* ── SQL WORKSPACE ── */
+    .sql-workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 900px) { .sql-workspace { grid-template-columns: 1fr; } }
+
+    .editor-panel, .results-panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .editor-header, .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--card-border);
+      font-size: 0.78rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+    }
+
+    .sql-editor {
+      width: 100%;
+      min-height: 240px;
+      background: transparent;
+      border: none;
+      padding: 16px;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      resize: vertical;
+      outline: none;
+    }
+
+    .results-content {
+      padding: 16px;
+      font-size: 0.85rem;
+      line-height: 1.6;
+      flex: 1;
+      overflow: auto;
+    }
+
+    /* ── BUTTONS ── */
+    .btn-execute {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      border: none;
+      border-radius: 6px;
+      padding: 6px 16px;
+      color: #0d0f1a;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .btn-execute:hover { opacity: 0.85; }
+
+    .btn-row { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+
+    .btn-hint, .btn-solution, .btn-next-exercise {
+      border: none;
+      border-radius: 8px;
+      padding: 9px 18px;
+      font-family: 'Sora', sans-serif;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-hint     { background: rgba(247,201,72,0.12); color: var(--accent3); border: 1px solid rgba(247,201,72,0.25); }
+    .btn-solution { background: rgba(124,106,247,0.12); color: var(--accent2); border: 1px solid rgba(124,106,247,0.25); }
+    .btn-hint:hover     { background: rgba(247,201,72,0.22); }
+    .btn-solution:hover { background: rgba(124,106,247,0.22); }
+
+    .btn-next-exercise {
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      color: #0d0f1a;
+      padding: 12px 28px;
+      font-size: 0.9rem;
+      margin-top: 12px;
+    }
+
+    .btn-next-exercise:hover { opacity: 0.85; }
+
+    /* ── HINT / SOLUTION / SUCCESS ── */
+    .hint-box, .solution-box {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+      font-size: 0.86rem;
+      line-height: 1.7;
+    }
+
+    .hint-box.show, .solution-box.show { display: block; }
+    .hint-box p { margin-bottom: 6px; color: var(--accent3); }
+
+    .solution-box pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: #a0d8ef;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .success-message {
+      display: none;
+      background: rgba(61,220,132,0.08);
+      border: 1px solid rgba(61,220,132,0.3);
+      border-radius: 10px;
+      padding: 18px 22px;
+      margin-bottom: 16px;
+    }
+
+    .success-message.show { display: block; }
+    .success-message h3 { color: var(--success); margin-bottom: 6px; }
+    .success-message p  { font-size: 0.88rem; color: var(--text-muted); }
+
+    .error-message {
+      display: none;
+      background: rgba(255,94,94,0.08);
+      border: 1px solid rgba(255,94,94,0.3);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+    .error-message.show { display: block; }
+    .error-message p { font-size: 0.86rem; color: var(--danger); }
+
+    /* ── RESULT TABLE ── */
+    .result-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.82rem;
+    }
+
+    .result-table th {
+      background: rgba(41,212,245,0.08);
+      padding: 8px 12px;
+      text-align: left;
+      color: var(--accent);
+      font-weight: 600;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .result-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      color: var(--text-muted);
+    }
+
+    .result-table tr:hover td { background: rgba(255,255,255,0.03); color: var(--text); }
+
+    /* ── PROGRESS ── */
+    .progress-tracker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .progress-dot {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      background: var(--card-border);
+      color: var(--text-muted);
+      border: 2px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .progress-dot.completed { background: rgba(61,220,132,0.15); color: var(--success); border-color: var(--success); }
+    .progress-dot.current   { background: rgba(41,212,245,0.15); color: var(--accent);  border-color: var(--accent); }
+
+    ul { padding-left: 18px; }
+    ul li { line-height: 2; font-size: 0.88rem; }
   </style>
 </head>
 
 <body>
 
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════ -->
 <div class="sidebar">
-  <h2>❄️ Snowflake Lab</h2>
-  <input type="text" class="search-box" placeholder="🔍 Buscar ejercicio..." onkeyup="searchExercises(this.value)">
-  
+  <div class="sidebar-logo">
+    <span style="font-size:1.5rem;">❄️</span>
+    <h2>Snowflake Lab</h2>
+  </div>
+
+  <input type="text" class="search-box" placeholder="🔍 Buscar ejercicio..." oninput="searchExercises(this.value)">
+
   <div class="category">Teoría</div>
   <div class="nav-item" onclick="showWelcome(this)">🏠 Inicio</div>
   <div class="nav-item" onclick="loadTheory('intro', this)">📘 Introducción</div>
   <div class="nav-item" onclick="loadTheory('arquitectura', this)">🏗️ Arquitectura</div>
-  
+
   <div class="category">SQL Básico</div>
   <div class="nav-item" onclick="loadExercise('ddl_basico', this)">📝 DDL Básico</div>
   <div class="nav-item" onclick="loadExercise('dml_basico', this)">💾 DML Básico</div>
   <div class="nav-item" onclick="loadExercise('consultas_simples', this)">🔍 Consultas Simples</div>
-  <div class="nav-item" onclick="loadExercise('filtros_ordenamiento', this)">🎯 WHERE & ORDER</div>
-  
+  <div class="nav-item" onclick="loadExercise('filtros_ordenamiento', this)">🎯 WHERE &amp; ORDER</div>
+
   <div class="category">SQL Intermedio</div>
   <div class="nav-item" onclick="loadExercise('joins', this)">🔗 JOINs</div>
   <div class="nav-item" onclick="loadExercise('agregaciones', this)">📊 Agregaciones</div>
   <div class="nav-item" onclick="loadExercise('subconsultas', this)">🎭 Subconsultas</div>
   <div class="nav-item" onclick="loadExercise('window_functions', this)">🪟 Window Functions</div>
-  
+
   <div class="category">Snowflake Avanzado</div>
   <div class="nav-item" onclick="loadExercise('warehouses', this)">⚙️ Warehouses</div>
   <div class="nav-item" onclick="loadExercise('variant_json', this)">📄 Semi-estructurados</div>
   <div class="nav-item" onclick="loadExercise('time_travel', this)">⏳ Time Travel</div>
-  <div class="nav-item" onclick="loadExercise('streams_tasks', this)">🔄 Streams & Tasks</div>
-  
+  <div class="nav-item" onclick="loadExercise('streams_tasks', this)">🔄 Streams &amp; Tasks</div>
+
   <div class="category">Casos Reales</div>
   <div class="nav-item" onclick="loadExercise('caso_ecommerce', this)">🛒 E-commerce</div>
   <div class="nav-item" onclick="loadExercise('caso_analytics', this)">📈 Analytics</div>
   <div class="nav-item" onclick="loadExercise('caso_etl', this)">⚡ Pipeline ETL</div>
-  
+
   <div class="category">Laboratorio</div>
   <div class="nav-item" onclick="openSandbox(this)">🔬 Sandbox Libre</div>
   <div class="nav-item" onclick="viewProgress(this)">📊 Mi Progreso</div>
 </div>
 
+<!-- ══════════════════════════════════════════
+     MAIN CONTENT
+══════════════════════════════════════════ -->
 <div class="content">
-  <div id="main-area">
-    <!-- Contenido dinámico aquí -->
-  </div>
+  <div id="main-area"></div>
 </div>
 
 <script>
-// Dataset de ejemplo para ejercicios
-const sampleData = {
-  clientes: [
-    { id: 1, nombre: "Ana García", email: "ana@email.com", ciudad: "Madrid", pais: "España", fecha_registro: "2024-01-15", segmento: "Premium" },
-    { id: 2, nombre: "Carlos López", email: "carlos@email.com", ciudad: "Barcelona", pais: "España", fecha_registro: "2024-02-20", segmento: "Standard" },
-    { id: 3, nombre: "María Rodríguez", email: "maria@email.com", ciudad: "México DF", pais: "México", fecha_registro: "2024-01-10", segmento: "Premium" },
-    { id: 4, nombre: "Juan Martínez", email: "juan@email.com", ciudad: "Buenos Aires", pais: "Argentina", fecha_registro: "2024-03-05", segmento: "Basic" },
-    { id: 5, nombre: "Laura Sánchez", email: "laura@email.com", ciudad: "Madrid", pais: "España", fecha_registro: "2024-02-28", segmento: "Standard" }
-  ],
-  
-  productos: [
-    { id: 101, nombre: "Laptop Pro", categoria: "Tecnología", precio: 1200, stock: 50 },
-    { id: 102, nombre: "Mouse Inalámbrico", categoria: "Tecnología", precio: 25, stock: 200 },
-    { id: 103, nombre: "Escritorio Ergonómico", categoria: "Muebles", precio: 450, stock: 20 },
-    { id: 104, nombre: "Silla Ejecutiva", categoria: "Muebles", precio: 300, stock: 35 },
-    { id: 105, nombre: "Monitor 4K", categoria: "Tecnología", precio: 600, stock: 0 }
-  ],
-  
-  ventas: [
-    { id: 1001, cliente_id: 1, producto_id: 101, cantidad: 1, fecha: "2024-04-01", total: 1200 },
-    { id: 1002, cliente_id: 1, producto_id: 102, cantidad: 2, fecha: "2024-04-01", total: 50 },
-    { id: 1003, cliente_id: 2, producto_id: 103, cantidad: 1, fecha: "2024-04-02", total: 450 },
-    { id: 1004, cliente_id: 3, producto_id: 101, cantidad: 2, fecha: "2024-04-03", total: 2400 },
-    { id: 1005, cliente_id: 4, producto_id: 104, cantidad: 1, fecha: "2024-04-04", total: 300 },
-    { id: 1006, cliente_id: 5, producto_id: 102, cantidad: 3, fecha: "2024-04-05", total: 75 },
-    { id: 1007, cliente_id: 2, producto_id: 101, cantidad: 1, fecha: "2024-04-06", total: 1200 }
-  ],
-  
-  eventos_web: [
-    { id: 1, usuario_id: 1, evento: "page_view", pagina: "/productos", timestamp: "2024-04-10 10:00:00", metadata: '{"browser": "Chrome", "device": "desktop"}' },
-    { id: 2, usuario_id: 1, evento: "add_to_cart", pagina: "/productos/101", timestamp: "2024-04-10 10:05:00", metadata: '{"product_id": 101, "quantity": 1}' },
-    { id: 3, usuario_id: 2, evento: "page_view", pagina: "/home", timestamp: "2024-04-10 11:00:00", metadata: '{"browser": "Firefox", "device": "mobile"}' }
-  ]
-};
-
-// Contenido teórico
+// ─────────────────────────────────────────────────────────────────
+// TEORÍA
+// ─────────────────────────────────────────────────────────────────
 const theoryData = {
   intro: {
     title: "Introducción a Snowflake",
-    tag: "Fundamentos",
+    tag: "theory",
+    tagLabel: "Fundamentos",
     content: `
-      <p>Snowflake es una plataforma de datos en la nube revolucionaria que separa completamente el almacenamiento del procesamiento. 
-      Esto permite escalar cada componente de forma independiente y pagar únicamente por lo que usas.</p>
-      
-      <div class="info-box" style="background: #e3f2fd; border-left: 4px solid #2196f3; padding: 15px; margin: 15px 0; border-radius: 4px;">
-        <strong>💡 Ventaja clave:</strong> A diferencia de las bases de datos tradicionales, Snowflake gestiona automáticamente 
-        la infraestructura, el tuning de rendimiento y la disponibilidad.
+      <p style="line-height:1.8;color:#a0b0d0;margin-bottom:16px;">
+        Snowflake es una plataforma de datos en la nube que separa completamente el almacenamiento
+        del procesamiento. Esto permite escalar cada componente de forma independiente y pagar
+        únicamente por lo que usas.
+      </p>
+      <div class="info-box">
+        <strong>💡 Ventaja clave:</strong> A diferencia de las bases de datos tradicionales,
+        Snowflake gestiona automáticamente la infraestructura, el tuning de rendimiento y la
+        disponibilidad.
       </div>
-      
-      <h3>Características principales:</h3>
-      <ul style="margin-left: 20px; line-height: 2;">
+      <h3 style="margin-top:20px;margin-bottom:10px;">Características principales</h3>
+      <ul>
         <li>Arquitectura multi-cluster compartida</li>
         <li>Separación de almacenamiento y cómputo</li>
         <li>Soporte nativo para datos semiestructurados (JSON, XML, Avro)</li>
@@ -137,212 +560,632 @@ const theoryData = {
       </ul>
     `
   },
-  
   arquitectura: {
     title: "Arquitectura de Snowflake",
-    tag: "Fundamentos",
+    tag: "theory",
+    tagLabel: "Fundamentos",
     content: `
-      <p>La arquitectura de Snowflake tiene 3 capas distintas que trabajan en conjunto:</p>
-      
-      <div class="card" style="border-left: 4px solid #ff6b6b; margin: 15px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>🏢 1. Capa de Almacenamiento</h3>
-        <p>Utiliza almacenamiento en cloud (AWS S3, Azure Blob, GCS). Los datos se organizan en 
-        <strong>micro-particiones</strong> de 50-500 MB comprimidas en columnar.</p>
+      <p style="line-height:1.8;color:#a0b0d0;margin-bottom:16px;">
+        La arquitectura de Snowflake tiene 3 capas distintas que trabajan en conjunto:
+      </p>
+      <div class="arch-card arch-red">
+        <h3 style="color:#ff6b6b;margin-bottom:8px;">🏢 1. Capa de Almacenamiento</h3>
+        <p style="font-size:0.88rem;line-height:1.6;color:#a0b0d0;">
+          Utiliza almacenamiento en cloud (AWS S3, Azure Blob, GCS). Los datos se organizan en
+          <strong>micro-particiones</strong> de 50–500 MB comprimidas en columnar.
+        </p>
       </div>
-      
-      <div class="card" style="border-left: 4px solid #4ecdc4; margin: 15px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>⚡ 2. Capa de Cómputo (Virtual Warehouses)</h3>
-        <p>Múltiples clusters independientes que procesan consultas. Pueden escalar verticalmente 
-        (más recursos) u horizontalmente (más clusters).</p>
+      <div class="arch-card arch-teal">
+        <h3 style="color:#4ecdc4;margin-bottom:8px;">⚡ 2. Capa de Cómputo (Virtual Warehouses)</h3>
+        <p style="font-size:0.88rem;line-height:1.6;color:#a0b0d0;">
+          Múltiples clusters independientes que procesan consultas. Pueden escalar verticalmente
+          (más recursos) u horizontalmente (más clusters).
+        </p>
       </div>
-      
-      <div class="card" style="border-left: 4px solid #45b7d1; margin: 15px 0; padding: 20px; background: white; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h3>🎛️ 3. Capa de Servicios</h3>
-        <p>Gestiona autenticación, optimización de consultas, metadatos y control de acceso. 
-        Es el "cerebro" que coordina todo.</p>
+      <div class="arch-card arch-blue">
+        <h3 style="color:#29d4f5;margin-bottom:8px;">🎛️ 3. Capa de Servicios</h3>
+        <p style="font-size:0.88rem;line-height:1.6;color:#a0b0d0;">
+          Gestiona autenticación, optimización de consultas, metadatos y control de acceso.
+          Es el "cerebro" que coordina todo.
+        </p>
       </div>
     `
   }
 };
 
-// Banco de ejercicios SQL
+// ─────────────────────────────────────────────────────────────────
+// EJERCICIOS
+// ─────────────────────────────────────────────────────────────────
 const exercises = {
+
+  // ── DDL BÁSICO ──────────────────────────────────────────────────
   ddl_basico: {
-    title: "DDL Básico - Creación de Objetos",
+    title: "DDL Básico — Creación de Objetos",
     difficulty: "easy",
-    description: "Aprende a crear bases de datos, schemas y tablas en Snowflake.",
     context: "Vas a crear la estructura inicial para un sistema de e-commerce.",
     objectives: [
-      "Crear una base de datos llamada 'tienda_online'",
-      "Crear un schema 'ventas' dentro de esa base de datos",
-      "Crear una tabla 'clientes' con columnas: id, nombre, email, fecha_registro"
+      "Crear una base de datos llamada <code>tienda_online</code>",
+      "Crear un schema <code>ventas</code> dentro de esa base de datos",
+      "Crear una tabla <code>clientes</code> con columnas: id (NUMBER), nombre (VARCHAR), email (VARCHAR), fecha_registro (TIMESTAMP)"
     ],
-    schema: `-- Estructura esperada:
-DATABASE: tienda_online
-  SCHEMA: ventas
-    TABLE: clientes (
-      id NUMBER,
-      nombre VARCHAR(100),
-      email VARCHAR(100),
-      fecha_registro TIMESTAMP
-    )`,
-    startingCode: "-- Escribe tu código DDL aquí
-",
-    validation: (code) => {
+    schema: `DATABASE: tienda_online\n  SCHEMA: ventas\n    TABLE: clientes (\n      id             NUMBER,\n      nombre         VARCHAR(100),\n      email          VARCHAR(100),\n      fecha_registro TIMESTAMP\n    )`,
+    startingCode: "-- Escribe tu código DDL aquí\n",
+    validation(code) {
+      const c = code || '';
       const checks = {
-        hasCreateDatabase: /create\s+database\s+tienda_online/i.test(code),
-        hasCreateSchema: /create\s+schema\s+ventas/i.test(code),
-        hasCreateTable: /create\s+table\s+clientes/i.test(code),
-        hasIdColumn: /id\s+number/i.test(code),
-        hasNombreColumn: /nombre\s+varchar/i.test(code),
-        hasEmailColumn: /email\s+varchar/i.test(code),
-        hasFechaColumn: /fecha_registro\s+timestamp/i.test(code)
+        "CREATE DATABASE tienda_online": /create\s+database\s+tienda_online/i.test(c),
+        "CREATE SCHEMA ventas": /create\s+schema\s+ventas/i.test(c),
+        "CREATE TABLE clientes": /create\s+table\s+(ventas\.)?clientes/i.test(c),
+        "Columna id NUMBER": /\bid\s+number/i.test(c),
+        "Columna nombre VARCHAR": /nombre\s+varchar/i.test(c),
+        "Columna email VARCHAR": /email\s+varchar/i.test(c),
+        "Columna fecha_registro TIMESTAMP": /fecha_registro\s+timestamp/i.test(c)
       };
-      
-      const passed = Object.values(checks).filter(v => v).length;
+      const passed = Object.values(checks).filter(Boolean).length;
       const total = Object.keys(checks).length;
-      
       return {
         success: passed === total,
-        passed: passed,
-        total: total,
-        message: passed === total ? 
-          "¡Perfecto! Has creado correctamente la estructura de base de datos." : 
-          `Has completado ${passed} de ${total} requisitos. Revisa que tengas todos los elementos solicitados.`,
+        passed, total,
+        checks,
+        message: passed === total
+          ? "¡Perfecto! Has creado correctamente la estructura de base de datos."
+          : `Completaste ${passed} de ${total} requisitos. Revisa los elementos faltantes.`,
         hints: [
-          "Usa CREATE DATABASE para crear la base de datos",
-          "Usa CREATE SCHEMA para crear el schema",
-          "En CREATE TABLE, define cada columna con su tipo de datos"
+          "Usa CREATE DATABASE tienda_online;",
+          "Luego CREATE SCHEMA ventas;",
+          "Finalmente CREATE TABLE ventas.clientes ( id NUMBER, ... );"
         ]
       };
     },
-    solution: `CREATE DATABASE tienda_online;
-USE DATABASE tienda_online;
-
-CREATE SCHEMA ventas;
-
-CREATE TABLE ventas.clientes (
-    id NUMBER,
-    nombre VARCHAR(100),
-    email VARCHAR(100),
-    fecha_registro TIMESTAMP
-);`
+    solution: `CREATE DATABASE tienda_online;\nUSE DATABASE tienda_online;\n\nCREATE SCHEMA ventas;\n\nCREATE TABLE ventas.clientes (\n    id             NUMBER,\n    nombre         VARCHAR(100),\n    email          VARCHAR(100),\n    fecha_registro TIMESTAMP\n);`
   },
-  
-  // ... (todos los demás ejercicios se mantienen igual) ...
-  
+
+  // ── DML BÁSICO ──────────────────────────────────────────────────
+  dml_basico: {
+    title: "DML Básico — Insertar y Actualizar Datos",
+    difficulty: "easy",
+    context: "Practica las operaciones básicas de manipulación de datos.",
+    objectives: [
+      "Insertar al menos 2 registros en la tabla clientes",
+      "Actualizar el segmento de un cliente usando UPDATE",
+      "Eliminar un registro usando DELETE con condición WHERE"
+    ],
+    schema: `TABLE: clientes\n  id NUMBER, nombre VARCHAR, email VARCHAR,\n  ciudad VARCHAR, segmento VARCHAR`,
+    startingCode: "-- Operaciones DML\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "INSERT con VALUES": /insert\s+into\s+\w+.*values/i.test(c),
+        "Al menos 2 inserts": (c.match(/insert\s+into/gi) || []).length >= 2,
+        "UPDATE con SET": /update\s+\w+\s+set/i.test(c),
+        "DELETE con WHERE": /delete\s+from\s+\w+\s+where/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Buen manejo de DML!" : "Asegúrate de tener INSERT, UPDATE y DELETE.",
+        hints: [
+          "INSERT INTO clientes (id, nombre) VALUES (1, 'Ana');",
+          "UPDATE clientes SET segmento = 'Premium' WHERE id = 1;",
+          "DELETE FROM clientes WHERE id = 2;"
+        ]
+      };
+    },
+    solution: `-- Insertar registros\nINSERT INTO clientes (id, nombre, email, ciudad, segmento)\nVALUES (1, 'Ana García', 'ana@email.com', 'Madrid', 'Standard');\n\nINSERT INTO clientes (id, nombre, email, ciudad, segmento)\nVALUES (2, 'Carlos López', 'carlos@email.com', 'Barcelona', 'Basic');\n\n-- Actualizar\nUPDATE clientes\nSET segmento = 'Premium'\nWHERE id = 1;\n\n-- Eliminar\nDELETE FROM clientes\nWHERE id = 2;`
+  },
+
+  // ── CONSULTAS SIMPLES ────────────────────────────────────────────
+  consultas_simples: {
+    title: "Consultas Simples — SELECT",
+    difficulty: "easy",
+    context: "Practica las consultas básicas de lectura de datos.",
+    objectives: [
+      "Seleccionar todas las columnas de la tabla clientes",
+      "Seleccionar solo nombre y email",
+      "Usar alias (AS) en al menos una columna"
+    ],
+    schema: `TABLE: clientes\n  id, nombre, email, ciudad, pais, segmento`,
+    startingCode: "-- Consultas SELECT\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "SELECT *": /select\s+\*/i.test(c),
+        "SELECT columnas específicas": /select\s+\w+\s*,\s*\w+/i.test(c),
+        "Uso de alias AS": /\bas\s+\w+/i.test(c),
+        "FROM tabla": /from\s+\w+/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Buen dominio del SELECT!" : "Incluye SELECT *, SELECT con columnas y un alias.",
+        hints: [
+          "SELECT * FROM clientes;",
+          "SELECT nombre, email FROM clientes;",
+          "SELECT nombre AS cliente_nombre FROM clientes;"
+        ]
+      };
+    },
+    solution: `-- Todas las columnas\nSELECT * FROM clientes;\n\n-- Columnas específicas\nSELECT nombre, email FROM clientes;\n\n-- Con alias\nSELECT\n    nombre         AS cliente_nombre,\n    email          AS correo,\n    ciudad         AS ubicacion\nFROM clientes;`
+  },
+
+  // ── FILTROS Y ORDENAMIENTO ───────────────────────────────────────
+  filtros_ordenamiento: {
+    title: "Filtros y Ordenamiento — WHERE & ORDER BY",
+    difficulty: "easy",
+    context: "Aprende a filtrar y ordenar resultados en tus consultas.",
+    objectives: [
+      "Filtrar clientes de España usando WHERE",
+      "Filtrar con múltiples condiciones (AND / OR)",
+      "Ordenar resultados con ORDER BY DESC"
+    ],
+    schema: `TABLE: clientes\n  id, nombre, email, ciudad, pais, segmento`,
+    startingCode: "-- Filtros y ordenamiento\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "WHERE con condición": /where\s+\w+/i.test(c),
+        "AND u OR": /\band\b|\bor\b/i.test(c),
+        "ORDER BY": /order\s+by/i.test(c),
+        "ASC o DESC": /\basc\b|\bdesc\b/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Excelente manejo de filtros!" : "Usa WHERE, AND/OR y ORDER BY.",
+        hints: [
+          "WHERE pais = 'España'",
+          "WHERE pais = 'España' AND segmento = 'Premium'",
+          "ORDER BY nombre DESC"
+        ]
+      };
+    },
+    solution: `-- Clientes de España\nSELECT * FROM clientes\nWHERE pais = 'España';\n\n-- Múltiples condiciones\nSELECT * FROM clientes\nWHERE pais = 'España'\n  AND segmento = 'Premium';\n\n-- Ordenados por nombre\nSELECT nombre, ciudad, segmento\nFROM clientes\nWHERE pais IN ('España', 'México')\nORDER BY nombre DESC;`
+  },
+
+  // ── JOINS ────────────────────────────────────────────────────────
+  joins: {
+    title: "JOINs — Combinar Tablas",
+    difficulty: "medium",
+    context: "Une tablas para obtener información combinada de clientes, ventas y productos.",
+    objectives: [
+      "Usar INNER JOIN para unir clientes con ventas",
+      "Usar LEFT JOIN para incluir clientes sin ventas",
+      "Unir tres tablas: clientes + ventas + productos"
+    ],
+    schema: `clientes (id, nombre, segmento)\nventas   (id, cliente_id, producto_id, total, fecha)\nproductos (id, nombre, categoria, precio)`,
+    startingCode: "-- JOINs\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "INNER JOIN o JOIN": /\b(inner\s+)?join\b/i.test(c),
+        "LEFT JOIN": /left\s+join/i.test(c),
+        "ON con condición": /\bon\s+\w+\.\w+\s*=\s*\w+\.\w+/i.test(c),
+        "Tres tablas combinadas": (c.match(/\bjoin\b/gi) || []).length >= 2
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Dominas los JOINs!" : "Usa INNER JOIN, LEFT JOIN y une al menos 3 tablas.",
+        hints: [
+          "SELECT c.nombre, v.total FROM clientes c JOIN ventas v ON c.id = v.cliente_id",
+          "LEFT JOIN incluye registros sin coincidencia",
+          "Añade JOIN productos p ON p.id = v.producto_id"
+        ]
+      };
+    },
+    solution: `-- INNER JOIN\nSELECT c.nombre, v.total, v.fecha\nFROM clientes c\nINNER JOIN ventas v ON c.id = v.cliente_id;\n\n-- LEFT JOIN (incluye clientes sin ventas)\nSELECT c.nombre, v.total\nFROM clientes c\nLEFT JOIN ventas v ON c.id = v.cliente_id;\n\n-- Tres tablas\nSELECT\n    c.nombre   AS cliente,\n    p.nombre   AS producto,\n    v.total\nFROM clientes c\nJOIN ventas v    ON c.id = v.cliente_id\nJOIN productos p ON p.id = v.producto_id\nORDER BY v.total DESC;`
+  },
+
+  // ── AGREGACIONES ─────────────────────────────────────────────────
+  agregaciones: {
+    title: "Agregaciones — GROUP BY y Funciones",
+    difficulty: "medium",
+    context: "Calcula métricas de negocio usando funciones de agregación.",
+    objectives: [
+      "Contar ventas por cliente usando COUNT y GROUP BY",
+      "Calcular el total de ventas por categoría con SUM",
+      "Filtrar grupos usando HAVING"
+    ],
+    schema: `ventas (id, cliente_id, producto_id, total)\nproductos (id, nombre, categoria, precio)`,
+    startingCode: "-- Agregaciones\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "COUNT o SUM": /\b(count|sum|avg|min|max)\s*\(/i.test(c),
+        "GROUP BY": /group\s+by/i.test(c),
+        "HAVING": /having/i.test(c),
+        "Alias en agregación": /\b(count|sum|avg)\s*\(.*\)\s+as\s+\w+/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Perfecto dominio de agregaciones!" : "Usa COUNT/SUM, GROUP BY y HAVING.",
+        hints: [
+          "SELECT cliente_id, COUNT(*) AS total_compras FROM ventas GROUP BY cliente_id",
+          "HAVING COUNT(*) > 1",
+          "SUM(total) para sumar montos"
+        ]
+      };
+    },
+    solution: `-- Ventas por cliente\nSELECT cliente_id, COUNT(*) AS num_compras, SUM(total) AS monto_total\nFROM ventas\nGROUP BY cliente_id\nORDER BY monto_total DESC;\n\n-- Clientes con más de 1 compra (HAVING)\nSELECT cliente_id, COUNT(*) AS compras\nFROM ventas\nGROUP BY cliente_id\nHAVING COUNT(*) > 1;\n\n-- Total por categoría (con JOIN)\nSELECT p.categoria, SUM(v.total) AS revenue\nFROM ventas v\nJOIN productos p ON p.id = v.producto_id\nGROUP BY p.categoria\nORDER BY revenue DESC;`
+  },
+
+  // ── SUBCONSULTAS ─────────────────────────────────────────────────
+  subconsultas: {
+    title: "Subconsultas — Consultas Anidadas",
+    difficulty: "medium",
+    context: "Usa subconsultas para resolver problemas complejos de análisis.",
+    objectives: [
+      "Usar una subconsulta en el WHERE con IN",
+      "Crear una subconsulta correlacionada",
+      "Usar CTE (WITH) para organizar la lógica"
+    ],
+    schema: `clientes (id, nombre, segmento)\nventas (id, cliente_id, total)`,
+    startingCode: "-- Subconsultas y CTEs\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "Subconsulta con IN o EXISTS": /\b(in|exists)\s*\(\s*select/i.test(c),
+        "CTE con WITH": /\bwith\b\s+\w+\s+as\s*\(/i.test(c),
+        "Subconsulta en FROM": /from\s*\(\s*select/i.test(c) || /\bwith\b/i.test(c),
+        "Múltiples SELECTs": (c.match(/\bselect\b/gi) || []).length >= 2
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Excelente uso de subconsultas!" : "Usa IN (subquery), WITH...AS y subconsultas en FROM.",
+        hints: [
+          "WHERE id IN (SELECT cliente_id FROM ventas WHERE total > 1000)",
+          "WITH clientes_top AS (SELECT ... ) SELECT * FROM clientes_top",
+          "FROM (SELECT ...) subq"
+        ]
+      };
+    },
+    solution: `-- Subconsulta con IN\nSELECT nombre FROM clientes\nWHERE id IN (\n    SELECT DISTINCT cliente_id FROM ventas WHERE total > 500\n);\n\n-- CTE\nWITH resumen AS (\n    SELECT cliente_id, SUM(total) AS gasto_total\n    FROM ventas\n    GROUP BY cliente_id\n)\nSELECT c.nombre, r.gasto_total\nFROM clientes c\nJOIN resumen r ON c.id = r.cliente_id\nORDER BY r.gasto_total DESC;`
+  },
+
+  // ── WINDOW FUNCTIONS ─────────────────────────────────────────────
+  window_functions: {
+    title: "Window Functions — Análisis Avanzado",
+    difficulty: "hard",
+    context: "Usa funciones de ventana para rankings y análisis comparativo.",
+    objectives: [
+      "Calcular el ranking de ventas por cliente con ROW_NUMBER()",
+      "Obtener el total acumulado con SUM() OVER (ORDER BY ...)",
+      "Comparar con LAG() el valor anterior"
+    ],
+    schema: `ventas (id, cliente_id, total, fecha)`,
+    startingCode: "-- Window Functions\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "OVER ()": /over\s*\(/i.test(c),
+        "PARTITION BY o ORDER BY en OVER": /over\s*\(\s*(partition|order)/i.test(c),
+        "Función de ventana": /\b(row_number|rank|dense_rank|sum|avg|lag|lead|first_value|last_value)\s*\(/i.test(c),
+        "Alias para función de ventana": /over\s*\([^)]*\)\s+as\s+\w+/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Dominas las window functions!" : "Usa OVER(), PARTITION BY y funciones como ROW_NUMBER, SUM, LAG.",
+        hints: [
+          "ROW_NUMBER() OVER (PARTITION BY cliente_id ORDER BY total DESC) AS rank",
+          "SUM(total) OVER (ORDER BY fecha) AS acumulado",
+          "LAG(total, 1) OVER (ORDER BY fecha) AS venta_anterior"
+        ]
+      };
+    },
+    solution: `SELECT\n    cliente_id,\n    total,\n    fecha,\n    ROW_NUMBER() OVER (PARTITION BY cliente_id ORDER BY total DESC) AS rank_cliente,\n    SUM(total)   OVER (ORDER BY fecha ROWS UNBOUNDED PRECEDING)   AS acumulado,\n    LAG(total,1) OVER (ORDER BY fecha)                            AS venta_anterior\nFROM ventas\nORDER BY fecha;`
+  },
+
+  // ── WAREHOUSES ───────────────────────────────────────────────────
+  warehouses: {
+    title: "Virtual Warehouses — Gestión de Cómputo",
+    difficulty: "medium",
+    context: "Aprende a crear y gestionar Virtual Warehouses en Snowflake.",
+    objectives: [
+      "Crear un warehouse de tamaño MEDIUM con auto-suspend",
+      "Suspender y reanudar el warehouse manualmente",
+      "Escalar el warehouse a LARGE"
+    ],
+    schema: `-- No requiere tablas. Se trabaja con objetos Snowflake.`,
+    startingCode: "-- Gestión de Warehouses\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "CREATE WAREHOUSE": /create\s+(or\s+replace\s+)?warehouse/i.test(c),
+        "AUTO_SUSPEND": /auto_suspend\s*=/i.test(c),
+        "ALTER WAREHOUSE SUSPEND/RESUME": /alter\s+warehouse\s+\w+\s+(suspend|resume)/i.test(c),
+        "ALTER WAREHOUSE SET SIZE": /alter\s+warehouse\s+\w+\s+set\s+warehouse_size/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Buen manejo de warehouses!" : "Crea un warehouse, configura AUTO_SUSPEND y usa ALTER.",
+        hints: [
+          "CREATE WAREHOUSE mi_wh WITH WAREHOUSE_SIZE='MEDIUM' AUTO_SUSPEND=300;",
+          "ALTER WAREHOUSE mi_wh SUSPEND;",
+          "ALTER WAREHOUSE mi_wh SET WAREHOUSE_SIZE='LARGE';"
+        ]
+      };
+    },
+    solution: `-- Crear warehouse\nCREATE OR REPLACE WAREHOUSE mi_warehouse\n    WAREHOUSE_SIZE = 'MEDIUM'\n    AUTO_SUSPEND   = 300\n    AUTO_RESUME    = TRUE\n    COMMENT = 'Warehouse principal';\n\n-- Suspender\nALTER WAREHOUSE mi_warehouse SUSPEND;\n\n-- Reanudar\nALTER WAREHOUSE mi_warehouse RESUME;\n\n-- Escalar\nALTER WAREHOUSE mi_warehouse SET WAREHOUSE_SIZE = 'LARGE';`
+  },
+
+  // ── SEMI-ESTRUCTURADOS (VARIANT/JSON) ────────────────────────────
+  variant_json: {
+    title: "Datos Semi-estructurados — VARIANT y JSON",
+    difficulty: "hard",
+    context: "Consulta datos JSON almacenados en columnas VARIANT de Snowflake.",
+    objectives: [
+      "Crear una tabla con columna VARIANT",
+      "Extraer campo JSON con notación :campo",
+      "Usar FLATTEN para expandir arrays JSON"
+    ],
+    schema: `TABLE: eventos_web\n  id NUMBER, payload VARIANT`,
+    startingCode: "-- Datos semi-estructurados\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "Columna VARIANT": /variant/i.test(c),
+        "Notación : para extraer campo": /\w+:\w+/i.test(c),
+        "::STRING o ::NUMBER (casting)": /::\s*(string|number|integer|float|boolean|timestamp)/i.test(c),
+        "FLATTEN o PARSE_JSON": /flatten|parse_json/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Excelente manejo de JSON en Snowflake!" : "Usa VARIANT, notación :campo y FLATTEN.",
+        hints: [
+          "payload:browser::STRING",
+          "SELECT PARSE_JSON('{\"key\":\"value\"}'):key::STRING",
+          "FROM tabla, LATERAL FLATTEN(input => payload:items)"
+        ]
+      };
+    },
+    solution: `-- Tabla con VARIANT\nCREATE TABLE eventos_web (\n    id      NUMBER,\n    payload VARIANT\n);\n\n-- Insertar JSON\nINSERT INTO eventos_web\nSELECT 1, PARSE_JSON('{"browser":"Chrome","device":"desktop","tags":["web","promo"]}');\n\n-- Extraer campos\nSELECT\n    id,\n    payload:browser::STRING  AS browser,\n    payload:device::STRING   AS device\nFROM eventos_web;\n\n-- FLATTEN de array\nSELECT\n    e.id,\n    f.value::STRING AS tag\nFROM eventos_web e,\nLATERAL FLATTEN(input => e.payload:tags) f;`
+  },
+
+  // ── TIME TRAVEL ──────────────────────────────────────────────────
+  time_travel: {
+    title: "Time Travel — Recuperación de Datos",
+    difficulty: "hard",
+    context: "Usa Time Travel de Snowflake para consultar datos históricos y recuperarlos.",
+    objectives: [
+      "Consultar datos en un momento anterior con AT (TIMESTAMP)",
+      "Recuperar datos borrados usando BEFORE (STATEMENT)",
+      "Clonar una tabla en un punto del pasado"
+    ],
+    schema: `TABLE: ventas (id, total, fecha)`,
+    startingCode: "-- Time Travel\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "AT o BEFORE": /\bat\s*\(|before\s*\(/i.test(c),
+        "TIMESTAMP o STATEMENT": /timestamp\s*=>\s*|statement\s*=>/i.test(c),
+        "UNDROP o INSERT...SELECT histórico": /undrop|insert\s+into.*select.*at\s*\(/i.test(c),
+        "CLONE con AT": /clone\s+\w+\s+at\s*\(/i.test(c) || /create.*clone/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 2,
+        passed, total: 4, checks,
+        message: passed >= 2 ? "¡Buen uso de Time Travel!" : "Usa AT (TIMESTAMP => ...) y CLONE.",
+        hints: [
+          "SELECT * FROM ventas AT (TIMESTAMP => '2024-01-01'::TIMESTAMP);",
+          "SELECT * FROM ventas BEFORE (STATEMENT => '<query_id>');",
+          "CREATE TABLE ventas_backup CLONE ventas AT (TIMESTAMP => DATEADD(hour,-1,CURRENT_TIMESTAMP()));"
+        ]
+      };
+    },
+    solution: `-- Consultar datos de hace 1 hora\nSELECT * FROM ventas\nAT (TIMESTAMP => DATEADD(hour, -1, CURRENT_TIMESTAMP()));\n\n-- Consultar antes de un statement específico\nSELECT * FROM ventas\nBEFORE (STATEMENT => '01b66666-0000-0000-0000-000000000001');\n\n-- Clonar tabla al estado de hace 1 día\nCREATE TABLE ventas_ayer\nCLONE ventas\nAT (TIMESTAMP => DATEADD(day, -1, CURRENT_TIMESTAMP()));\n\n-- Recuperar datos borrados por error\nINSERT INTO ventas\nSELECT * FROM ventas\nBEFORE (STATEMENT => '<id_del_delete>');`
+  },
+
+  // ── STREAMS & TASKS ──────────────────────────────────────────────
+  streams_tasks: {
+    title: "Streams & Tasks — Procesamiento Continuo",
+    difficulty: "expert",
+    context: "Automatiza el procesamiento incremental de datos con Streams y Tasks.",
+    objectives: [
+      "Crear un Stream sobre una tabla fuente",
+      "Crear una Task que procese el stream",
+      "Usar SYSTEM$STREAM_HAS_DATA para condición"
+    ],
+    schema: `TABLE: ventas_raw (id, monto, ts)\nTABLE: ventas_procesadas (id, monto, ts, procesado_en)`,
+    startingCode: "-- Streams & Tasks\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "CREATE STREAM": /create\s+(or\s+replace\s+)?stream/i.test(c),
+        "ON TABLE": /on\s+table\s+\w+/i.test(c),
+        "CREATE TASK": /create\s+(or\s+replace\s+)?task/i.test(c),
+        "WHEN SYSTEM$STREAM_HAS_DATA": /when\s+system\$stream_has_data/i.test(c),
+        "ALTER TASK RESUME": /alter\s+task\s+\w+\s+resume/i.test(c)
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 4,
+        passed, total: 5, checks,
+        message: passed >= 4 ? "¡Excelente pipeline de streaming!" : "Necesitas CREATE STREAM, CREATE TASK con WHEN y ALTER TASK RESUME.",
+        hints: [
+          "CREATE STREAM mi_stream ON TABLE ventas_raw;",
+          "CREATE TASK mi_task SCHEDULE='1 minute' WHEN SYSTEM$STREAM_HAS_DATA('mi_stream') AS ...",
+          "ALTER TASK mi_task RESUME;"
+        ]
+      };
+    },
+    solution: `-- Stream sobre la tabla fuente\nCREATE OR REPLACE STREAM stream_ventas_raw\nON TABLE ventas_raw;\n\n-- Task que procesa el stream cada minuto\nCREATE OR REPLACE TASK task_procesar_ventas\n    WAREHOUSE = 'mi_warehouse'\n    SCHEDULE  = '1 minute'\nWHEN SYSTEM$STREAM_HAS_DATA('stream_ventas_raw')\nAS\nINSERT INTO ventas_procesadas (id, monto, ts, procesado_en)\nSELECT\n    id,\n    monto,\n    ts,\n    CURRENT_TIMESTAMP()\nFROM stream_ventas_raw\nWHERE METADATA$ACTION = 'INSERT';\n\n-- Activar la task\nALTER TASK task_procesar_ventas RESUME;\n\n-- Verificar estado\nSELECT *\nFROM TABLE(INFORMATION_SCHEMA.TASK_HISTORY(\n    TASK_NAME => 'task_procesar_ventas'\n));`
+  },
+
+  // ── CASO E-COMMERCE ──────────────────────────────────────────────
+  caso_ecommerce: {
+    title: "Caso Real: Análisis E-commerce",
+    difficulty: "hard",
+    context: "Analiza el comportamiento de compra de los clientes de una tienda online.",
+    objectives: [
+      "Calcular el revenue total por segmento de cliente",
+      "Identificar los 3 productos más vendidos",
+      "Obtener el ticket promedio por cliente y país"
+    ],
+    schema: `clientes  (id, nombre, pais, segmento)\nventas    (id, cliente_id, producto_id, total, fecha)\nproductos (id, nombre, categoria, precio)`,
+    startingCode: "-- Análisis E-commerce\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "JOIN entre tablas": /\bjoin\b/i.test(c),
+        "GROUP BY": /group\s+by/i.test(c),
+        "Función de agregación": /\b(sum|count|avg)\s*\(/i.test(c),
+        "ORDER BY con LIMIT o TOP": /order\s+by/i.test(c),
+        "Al menos 2 consultas": (c.match(/\bselect\b/gi) || []).length >= 2
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 4,
+        passed, total: 5, checks,
+        message: passed >= 4 ? "¡Análisis e-commerce completo!" : "Combina JOINs, GROUP BY y ORDER BY para responder las 3 preguntas.",
+        hints: [
+          "JOIN clientes ON c.id = v.cliente_id GROUP BY c.segmento",
+          "GROUP BY p.nombre ORDER BY SUM(v.total) DESC LIMIT 3",
+          "AVG(v.total) GROUP BY c.pais"
+        ]
+      };
+    },
+    solution: `-- 1. Revenue por segmento\nSELECT\n    c.segmento,\n    SUM(v.total)  AS revenue_total,\n    COUNT(v.id)   AS num_ventas\nFROM clientes c\nJOIN ventas v ON c.id = v.cliente_id\nGROUP BY c.segmento\nORDER BY revenue_total DESC;\n\n-- 2. Top 3 productos\nSELECT\n    p.nombre,\n    SUM(v.total) AS revenue\nFROM ventas v\nJOIN productos p ON p.id = v.producto_id\nGROUP BY p.nombre\nORDER BY revenue DESC\nLIMIT 3;\n\n-- 3. Ticket promedio por país\nSELECT\n    c.pais,\n    ROUND(AVG(v.total), 2) AS ticket_promedio,\n    COUNT(v.id)            AS num_ventas\nFROM clientes c\nJOIN ventas v ON c.id = v.cliente_id\nGROUP BY c.pais\nORDER BY ticket_promedio DESC;`
+  },
+
+  // ── CASO ANALYTICS ───────────────────────────────────────────────
+  caso_analytics: {
+    title: "Caso Real: Dashboard Analytics",
+    difficulty: "hard",
+    context: "Construye las consultas base para un dashboard de analítica web.",
+    objectives: [
+      "Contar eventos únicos por tipo usando COUNT DISTINCT",
+      "Calcular la tasa de conversión (add_to_cart / page_view)",
+      "Usar window function para ranking de páginas más visitadas"
+    ],
+    schema: `eventos_web (id, usuario_id, evento, pagina, ts)`,
+    startingCode: "-- Dashboard Analytics\n",
+    validation(code) {
+      const c = code || '';
+      const checks = {
+        "COUNT DISTINCT": /count\s*\(\s*distinct/i.test(c),
+        "CASE o división para tasa": /case\s+when|\bcase\b.*then|\//i.test(c),
+        "Window function": /over\s*\(/i.test(c),
+        "Múltiples consultas/CTEs": (c.match(/\bselect\b|\bwith\b/gi) || []).length >= 2
+      };
+      const passed = Object.values(checks).filter(Boolean).length;
+      return {
+        success: passed >= 3,
+        passed, total: 4, checks,
+        message: passed >= 3 ? "¡Dashboard analytics listo!" : "Usa COUNT DISTINCT, división para tasas y window functions.",
+        hints: [
+          "COUNT(DISTINCT usuario_id) para usuarios únicos",
+          "SUM(CASE WHEN evento='add_to_cart' THEN 1 ELSE 0 END) / COUNT(*) * 100",
+          "RANK() OVER (ORDER BY visitas DESC)"
+        ]
+      };
+    },
+    solution: `-- 1. Eventos únicos por tipo\nSELECT\n    evento,\n    COUNT(*)                  AS total_eventos,\n    COUNT(DISTINCT usuario_id) AS usuarios_unicos\nFROM eventos_web\nGROUP BY evento\nORDER BY total_eventos DESC;\n\n-- 2. Tasa de conversión\nSELECT\n    ROUND(\n        100.0 * SUM(CASE WHEN evento = 'add_to_cart' THEN 1 ELSE 0 END)\n              / NULLIF(SUM(CASE WHEN evento = 'page_view' THEN 1 ELSE 0 END), 0),\n    2) AS tasa_conversion_pct\nFROM eventos_web;\n\n-- 3. Ranking de páginas\nSELECT\n    pagina,\n    COUNT(*) AS visitas,\n    RANK() OVER (ORDER BY COUNT(*) DESC) AS ranking\nFROM eventos_web\nWHERE evento = 'page_view'\nGROUP BY pagina\nORDER BY ranking;`
+  },
+
+  // ── CASO ETL ─────────────────────────────────────────────────────
   caso_etl: {
     title: "Caso Real: Pipeline ETL Moderno",
     difficulty: "expert",
-    description: "Construye un pipeline completo ELT con Snowflake nativo.",
-    context: "Migra un proceso ETL tradicional a ELT usando Snowflake.",
+    context: "Construye un pipeline completo ELT con Snowflake nativo.",
     objectives: [
-      "Crear estructura de staging (schema raw)",
+      "Crear estructura de staging (schema raw) y analytics",
       "Configurar carga incremental con Stream",
-      "Transformar datos con CTAS y MERGE",
+      "Transformar datos con INSERT...SELECT y MERGE",
       "Crear Task para automatización diaria"
     ],
-    schema: "Sistema de staging y data warehouse",
-    startingCode: "-- Pipeline ETL/ELT
-",
-    validation: (code) => {
+    schema: `raw_data.events   (event_id, user_id, event_type, payload VARIANT)\nanalytics.user_events (event_sk, event_id, user_id, event_type, ...)`,
+    startingCode: "-- Pipeline ETL/ELT\n",
+    validation(code) {
+      const c = code || '';
       const checks = {
-        hasSchema: /create\s+schema/i.test(code),
-        hasStream: /create\s+stream/i.test(code),
-        hasCTAS: /create\s+table.*as\s+select|insert.*select/i.test(code),
-        hasMerge: /merge\s+into/i.test(code),
-        hasTask: /create\s+task/i.test(code),
-        hasTransformLogic: /case|coalesce|cast|try_cast/i.test(code)
+        "CREATE SCHEMA": /create\s+schema/i.test(c),
+        "CREATE STREAM": /create\s+(or\s+replace\s+)?stream/i.test(c),
+        "INSERT...SELECT o CTAS": /create\s+table.*as\s+select|insert\s+into.*select/i.test(c),
+        "MERGE INTO": /merge\s+into/i.test(c),
+        "CREATE TASK": /create\s+(or\s+replace\s+)?task/i.test(c),
+        "TRY_CAST o COALESCE": /try_cast|try_to_|coalesce/i.test(c)
       };
-      
-      const passed = Object.values(checks).filter(v => v).length;
-      
+      const passed = Object.values(checks).filter(Boolean).length;
       return {
         success: passed >= 5,
-        passed: passed,
-        total: 6,
-        message: passed >= 5 ? 
-          "¡Pipeline profesional completo! Dominas ELT moderno en Snowflake." : 
-          "Un pipeline ELT combina Streams (extracción), Tasks (carga) y MERGE/CTAS (transformación).",
+        passed, total: 6, checks,
+        message: passed >= 5 ? "¡Pipeline profesional completo!" : "Un ELT completo necesita schema, stream, transformación (MERGE) y task.",
         hints: [
           "CREATE SCHEMA raw_data; CREATE SCHEMA analytics;",
           "CREATE STREAM raw_changes ON TABLE raw_data.events;",
-          "MERGE INTO analytics.facts USING stream..."
+          "MERGE INTO analytics.facts USING stream_raw_changes AS src ON ..."
         ]
       };
     },
-    solution: `-- 1. Estructura de staging
-CREATE SCHEMA IF NOT EXISTS raw_data;
-CREATE SCHEMA IF NOT EXISTS analytics;
-
--- Tabla raw para datos sin procesar
-CREATE TABLE raw_data.events (
-    event_id STRING,
-    user_id STRING,
-    event_type STRING,
-    payload VARIANT,
-    received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
-);
-
--- 2. Tabla destino transformada
-CREATE TABLE analytics.user_events (
-    event_sk NUMBER AUTOINCREMENT,
-    event_id STRING,
-    user_id NUMBER,
-    event_type STRING,
-    session_id STRING,
-    device_type STRING,
-    geo_country STRING,
-    created_at TIMESTAMP,
-    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()
-);
-
--- 3. Stream para capturar cambios
-CREATE STREAM stream_raw_events ON TABLE raw_data.events;
-
--- 4. Task para procesamiento diario
-CREATE TASK process_events
-WAREHOUSE = 'etl_wh'
-SCHEDULE = 'USING CRON 0 0 * * * UTC' -- Cada día a medianoche
-WHEN SYSTEM$STREAM_HAS_DATA('stream_raw_events')
-AS
--- Transformación y carga
-INSERT INTO analytics.user_events (
-    event_id, 
-    user_id, 
-    event_type,
-    session_id,
-    device_type,
-    geo_country,
-    created_at
-)
-SELECT 
-    event_id,
-    TRY_CAST(user_id AS NUMBER) as user_id,
-    event_type,
-    payload:session_id::STRING as session_id,
-    payload:device:type::STRING as device_type,
-    payload:geo:country::STRING as geo_country,
-    TRY_TIMESTAMP_NTZ(payload:timestamp::STRING) as created_at
-FROM stream_raw_events
-WHERE event_type IN ('page_view', 'add_to_cart', 'purchase');
-
--- 5. Activar el task
-ALTER TASK process_events RESUME;`
+    solution: `-- 1. Schemas\nCREATE SCHEMA IF NOT EXISTS raw_data;\nCREATE SCHEMA IF NOT EXISTS analytics;\n\n-- 2. Tablas\nCREATE TABLE raw_data.events (\n    event_id   STRING,\n    user_id    STRING,\n    event_type STRING,\n    payload    VARIANT,\n    received_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()\n);\n\nCREATE TABLE analytics.user_events (\n    event_sk    NUMBER AUTOINCREMENT,\n    event_id    STRING,\n    user_id     NUMBER,\n    event_type  STRING,\n    session_id  STRING,\n    device_type STRING,\n    created_at  TIMESTAMP,\n    processed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP()\n);\n\n-- 3. Stream\nCREATE OR REPLACE STREAM stream_raw_events\nON TABLE raw_data.events;\n\n-- 4. Task diaria\nCREATE OR REPLACE TASK task_process_events\n    WAREHOUSE = 'etl_wh'\n    SCHEDULE  = 'USING CRON 0 0 * * * UTC'\nWHEN SYSTEM$STREAM_HAS_DATA('stream_raw_events')\nAS\nMERGE INTO analytics.user_events tgt\nUSING (\n    SELECT\n        event_id,\n        TRY_CAST(user_id AS NUMBER)           AS user_id,\n        event_type,\n        payload:session_id::STRING            AS session_id,\n        payload:device:type::STRING           AS device_type,\n        TRY_TO_TIMESTAMP(payload:timestamp::STRING) AS created_at\n    FROM stream_raw_events\n    WHERE METADATA$ACTION = 'INSERT'\n) src\nON tgt.event_id = src.event_id\nWHEN NOT MATCHED THEN\n    INSERT (event_id, user_id, event_type, session_id, device_type, created_at)\n    VALUES (src.event_id, src.user_id, src.event_type, src.session_id, src.device_type, src.created_at);\n\n-- 5. Activar\nALTER TASK task_process_events RESUME;`
   }
 };
 
-// Función para mostrar la pantalla de bienvenida
-function showWelcome(element) {
-  const mainArea = document.getElementById('main-area');
-  mainArea.innerHTML = `
+// ─────────────────────────────────────────────────────────────────
+// ORDEN DE NAVEGACIÓN
+// ─────────────────────────────────────────────────────────────────
+const exerciseOrder = [
+  'ddl_basico','dml_basico','consultas_simples','filtros_ordenamiento',
+  'joins','agregaciones','subconsultas','window_functions',
+  'warehouses','variant_json','time_travel','streams_tasks',
+  'caso_ecommerce','caso_analytics','caso_etl'
+];
+
+let currentExerciseId = '';
+let currentNavElement = null;
+
+// ─────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────
+function setActive(el) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (el) el.classList.add('active');
+  currentNavElement = el;
+}
+
+function difficultyBadge(d) {
+  if (!d) return '';
+  const labels = { easy:'Fácil', medium:'Medio', hard:'Difícil', expert:'Experto' };
+  return `<span class="difficulty-badge difficulty-${d}">${labels[d] || d}</span>`;
+}
+
+function buildChecklist(validation) {
+  if (!validation || !validation.checks) return '';
+  return Object.entries(validation.checks).map(([label, ok]) =>
+    `<div style="font-size:0.83rem;margin:3px 0;color:${ok?'var(--success)':'var(--danger)'}">
+      ${ok?'✔':'✖'} ${label}
+    </div>`
+  ).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────
+// PANTALLA DE BIENVENIDA
+// ─────────────────────────────────────────────────────────────────
+function showWelcome(el) {
+  setActive(el);
+  document.getElementById('main-area').innerHTML = `
     <div class="welcome-screen">
       <h1>❄️ Snowflake Learning Hub</h1>
-      <p>Laboratorio interactivo para aprender SQL y Snowflake</p>
-      
+      <p>Laboratorio interactivo para aprender SQL y Snowflake desde cero hasta experto</p>
+
       <div class="stats-panel">
         <div class="stat-card">
-          <div class="stat-number">${Object.keys(exercises).length}</div>
+          <div class="stat-number">${exerciseOrder.length}</div>
           <div class="stat-label">Ejercicios</div>
         </div>
         <div class="stat-card">
@@ -354,337 +1197,275 @@ function showWelcome(element) {
           <div class="stat-label">Casos reales</div>
         </div>
       </div>
-      
+
       <div class="feature-grid">
         <div class="feature-card">
           <h3>🛠️ Laboratorio SQL</h3>
-          <p>Ejercicios prácticos con validación automática y feedback instantáneo</p>
+          <p>Ejercicios con validación automática y feedback por requisito</p>
         </div>
         <div class="feature-card">
           <h3>📚 Teoría aplicada</h3>
-          <p>Conceptos fundamentales de Snowflake explicados con ejemplos</p>
+          <p>Conceptos fundamentales con ejemplos prácticos</p>
         </div>
         <div class="feature-card">
           <h3>📊 Casos reales</h3>
-          <p>Proyectos completos de e-commerce, analytics y pipelines ETL</p>
+          <p>E-commerce, analytics y pipelines ETL completos</p>
         </div>
         <div class="feature-card">
-          <h3>🔍 Sandbox libre</h3>
-          <p>Espacio para experimentar con SQL sin restricciones</p>
+          <h3>🔬 Sandbox libre</h3>
+          <p>Experimenta con SQL sin restricciones</p>
         </div>
       </div>
-      
-      <button class="btn-next-exercise" onclick="loadExercise('ddl_basico')">Comenzar primer ejercicio</button>
+
+      <button class="btn-next-exercise" onclick="loadExercise('ddl_basico')">
+        Comenzar primer ejercicio →
+      </button>
     </div>
   `;
-  
-  // Actualizar clase activa en sidebar
-  updateActiveNavItem(element);
 }
 
-// Función para cargar teoría
-function loadTheory(topic, element) {
-  if (!theoryData[topic]) return;
-  
-  const theory = theoryData[topic];
-  const mainArea = document.getElementById('main-area');
-  
-  mainArea.innerHTML = `
-    <div class="header">
-      <h1>${theory.title}</h1>
-      <span class="tag">${theory.tag}</span>
+// ─────────────────────────────────────────────────────────────────
+// CARGAR TEORÍA
+// ─────────────────────────────────────────────────────────────────
+function loadTheory(topic, el) {
+  const t = theoryData[topic];
+  if (!t) { alert('Contenido no disponible'); return; }
+  setActive(el);
+  document.getElementById('main-area').innerHTML = `
+    <div class="page-header">
+      <h1>${t.title}</h1>
+      <span class="tag tag-theory">${t.tagLabel}</span>
     </div>
-    
-    <div class="card">
-      ${theory.content}
-    </div>
+    <div class="card">${t.content}</div>
   `;
-  
-  // Actualizar clase activa en sidebar
-  updateActiveNavItem(element);
 }
 
-// Función para cargar ejercicio
-function loadExercise(exerciseId, element) {
-  if (!exercises[exerciseId]) return;
-  
-  const exercise = exercises[exerciseId];
-  const mainArea = document.getElementById('main-area');
-  
-  // Construir badges de dificultad
-  let difficultyBadge = '';
-  if (exercise.difficulty) {
-    const difficultyClass = `difficulty-${exercise.difficulty}`;
-    difficultyBadge = `<span class="difficulty-badge ${difficultyClass}">${exercise.difficulty}</span>`;
-  }
-  
-  mainArea.innerHTML = `
-    <div class="header">
-      <h1>${exercise.title} ${difficultyBadge}</h1>
-      <span class="tag sql">SQL</span>
-      <span class="tag lab">Laboratorio</span>
+// ─────────────────────────────────────────────────────────────────
+// CARGAR EJERCICIO
+// ─────────────────────────────────────────────────────────────────
+function loadExercise(id, el) {
+  const ex = exercises[id];
+  if (!ex) { alert('Ejercicio no disponible: ' + id); return; }
+  setActive(el);
+  currentExerciseId = id;
+
+  const hints = ex.validation ? ex.validation(null).hints || [] : [];
+  const nextId = exerciseOrder[exerciseOrder.indexOf(id) + 1];
+
+  document.getElementById('main-area').innerHTML = `
+    <div class="page-header">
+      <h1>${ex.title}</h1>
+      ${difficultyBadge(ex.difficulty)}
+      <span class="tag tag-sql">SQL</span>
+      <span class="tag tag-lab">Lab</span>
     </div>
-    
+
     <div class="exercise-description">
       <h3>Contexto</h3>
-      <p>${exercise.context}</p>
-      
-      <h3>Objetivos</h3>
+      <p>${ex.context}</p>
+      <h3 style="margin-top:16px;">Objetivos</h3>
       <ul class="exercise-objectives">
-        ${exercise.objectives.map(obj => `<li>${obj}</li>`).join('')}
+        ${ex.objectives.map(o => `<li>${o}</li>`).join('')}
       </ul>
     </div>
-    
-    ${exercise.schema ? `<div class="table-schema">${exercise.schema}</div>` : ''}
-    
+
+    ${ex.schema ? `<div class="table-schema">${ex.schema}</div>` : ''}
+
     <div class="sql-workspace">
       <div class="editor-panel">
         <div class="editor-header">
-          Editor SQL
-          <button class="btn-execute" onclick="executeSQL('${exerciseId}')">▶ Ejecutar</button>
+          <span>✏️ Editor SQL</span>
+          <button class="btn-execute" onclick="executeSQL()">▶ Ejecutar</button>
         </div>
-        <textarea id="sql-editor" class="sql-editor" placeholder="Escribe tu consulta SQL aquí...">${exercise.startingCode || ''}</textarea>
+        <textarea id="sql-editor" class="sql-editor">${ex.startingCode || ''}</textarea>
       </div>
-      
       <div class="results-panel">
-        <div class="results-header">Resultados</div>
+        <div class="results-header"><span>📋 Resultados de validación</span></div>
         <div id="results-content" class="results-content">
-          <p style="color: #999; text-align: center;">Ejecuta una consulta para ver los resultados</p>
+          <p style="color:var(--text-muted);text-align:center;margin-top:20px;">
+            Escribe tu SQL y presiona ▶ Ejecutar
+          </p>
         </div>
       </div>
     </div>
-    
-    <div style="margin-top: 20px;">
-      <button class="btn-hint" onclick="showHint()">💡 Mostrar pista</button>
-      <button class="btn-solution" onclick="showSolution()">🔍 Mostrar solución</button>
-    </div>
-    
-    <div id="hint-box" class="hint-box">
-      ${exercise.validation ? exercise.validation(null).hints.map(h => `<p>${h}</p>`).join('') : ''}
-    </div>
-    
-    <div id="solution-box" class="solution-box">
-      <pre>${exercise.solution || 'No hay solución disponible'}</pre>
-    </div>
-    
+
     <div id="success-message" class="success-message">
       <h3>✅ ¡Ejercicio completado!</h3>
       <p id="success-details"></p>
+      ${nextId ? `<button class="btn-next-exercise" onclick="loadExercise('${nextId}')" style="margin-top:12px;">Siguiente ejercicio →</button>` : ''}
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-hint" onclick="toggleBox('hint-box')">💡 Pistas</button>
+      <button class="btn-solution" onclick="toggleBox('solution-box')">🔍 Solución</button>
+    </div>
+
+    <div id="hint-box" class="hint-box">
+      <strong style="color:var(--accent3);display:block;margin-bottom:8px;">💡 Pistas:</strong>
+      ${hints.map(h => `<p>→ ${h}</p>`).join('')}
+    </div>
+
+    <div id="solution-box" class="solution-box">
+      <strong style="color:var(--accent2);display:block;margin-bottom:10px;">🔍 Solución:</strong>
+      <pre>${ex.solution || 'No disponible'}</pre>
     </div>
   `;
-  
-  // Actualizar clase activa en sidebar
-  updateActiveNavItem(element);
-  
-  // Guardar el ejercicio actual
-  currentExerciseId = exerciseId;
 }
 
-// Variable para rastrear el ejercicio actual
-let currentExerciseId = '';
-
-// Función para ejecutar SQL (simulado)
-function executeSQL(exerciseId) {
-  const editor = document.getElementById('sql-editor');
-  const code = editor.value;
+// ─────────────────────────────────────────────────────────────────
+// EJECUTAR / VALIDAR SQL
+// ─────────────────────────────────────────────────────────────────
+function executeSQL() {
+  const code = document.getElementById('sql-editor').value.trim();
   const resultsContent = document.getElementById('results-content');
-  const successMessage = document.getElementById('success-message');
+  const successMsg = document.getElementById('success-message');
   const successDetails = document.getElementById('success-details');
-  
-  // Simular ejecución (en un caso real, aquí iría la conexión a Snowflake)
+
+  if (!code) {
+    resultsContent.innerHTML = '<p style="color:var(--danger);">⚠️ El editor está vacío.</p>';
+    return;
+  }
+
+  const ex = exercises[currentExerciseId];
+  if (!ex || !ex.validation) {
+    resultsContent.innerHTML = '<p style="color:var(--success);">✔ Consulta registrada (sin validación automática).</p>';
+    return;
+  }
+
+  const result = ex.validation(code);
+
   resultsContent.innerHTML = `
-    <p style="color: #4CAF50;">✔ Consulta ejecutada correctamente</p>
-    <p>Mostrando resultados simulados...</p>
-    
-    <table class="result-table">
-      <thead>
-        <tr>
-          <th>Columna1</th>
-          <th>Columna2</th>
-          <th>Columna3</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Valor1</td>
-          <td>Valor2</td>
-          <td>Valor3</td>
-        </tr>
-        <tr>
-          <td>Valor4</td>
-          <td>Valor5</td>
-          <td>Valor6</td>
-        </tr>
-      </tbody>
-    </table>
-    
-    <p style="margin-top: 10px; color: #666;">3 filas recuperadas en 0.5 segundos</p>
+    <p style="color:${result.success ? 'var(--success)' : 'var(--accent3)'};font-weight:600;margin-bottom:12px;">
+      ${result.success ? '✅' : '⚠️'} ${result.message}
+    </p>
+    <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:10px;">
+      Requisitos cumplidos: <strong>${result.passed} / ${result.total}</strong>
+    </p>
+    <div>${buildChecklist(result)}</div>
   `;
-  
-  // Validar el ejercicio si tiene validación definida
-  if (exercises[exerciseId]?.validation) {
-    const validation = exercises[exerciseId].validation(code);
-    
-    if (validation.success) {
-      successMessage.classList.add('show');
-      successDetails.innerHTML = validation.message;
-    } else {
-      successMessage.classList.remove('show');
-    }
+
+  if (result.success) {
+    successMsg.classList.add('show');
+    successDetails.textContent = result.message;
+  } else {
+    successMsg.classList.remove('show');
   }
 }
 
-// Función para mostrar pista
-function showHint() {
-  const hintBox = document.getElementById('hint-box');
-  hintBox.classList.toggle('show');
+// ─────────────────────────────────────────────────────────────────
+// TOGGLE PISTAS / SOLUCIÓN
+// ─────────────────────────────────────────────────────────────────
+function toggleBox(id) {
+  const box = document.getElementById(id);
+  if (box) box.classList.toggle('show');
 }
 
-// Función para mostrar solución
-function showSolution() {
-  const solutionBox = document.getElementById('solution-box');
-  solutionBox.classList.toggle('show');
-}
-
-// Función para actualizar el ítem activo en el sidebar
-function updateActiveNavItem(clickedElement) {
-  // Remover clase 'active' de todos los ítems
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.remove('active');
-  });
-  
-  // Agregar clase 'active' al ítem clickeado
-  if (clickedElement) {
-    clickedElement.classList.add('active');
-  }
-}
-
-// Función para buscar ejercicios
-function searchExercises(query) {
-  // Implementación básica de búsqueda
-  const navItems = document.querySelectorAll('.nav-item');
-  const queryLower = query.toLowerCase();
-  
-  navItems.forEach(item => {
-    const text = item.textContent.toLowerCase();
-    if (text.includes(queryLower)) {
-      item.style.display = 'flex';
-    } else {
-      item.style.display = 'none';
-    }
-  });
-}
-
-// Función para abrir sandbox libre
-function openSandbox(element) {
-  const mainArea = document.getElementById('main-area');
-  
-  mainArea.innerHTML = `
-    <div class="header">
+// ─────────────────────────────────────────────────────────────────
+// SANDBOX
+// ─────────────────────────────────────────────────────────────────
+function openSandbox(el) {
+  setActive(el);
+  document.getElementById('main-area').innerHTML = `
+    <div class="page-header">
       <h1>🔬 Sandbox SQL Libre</h1>
-      <span class="tag">Experimentación</span>
+      <span class="tag tag-lab">Experimentación</span>
     </div>
-    
     <div class="card">
-      <p>Espacio para probar cualquier consulta SQL. Utiliza los datos de ejemplo o escribe tus propias consultas.</p>
-      
+      <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:16px;">
+        Espacio libre para probar cualquier consulta SQL. Recuerda que la ejecución es simulada.
+      </p>
       <div class="sql-workspace">
         <div class="editor-panel">
           <div class="editor-header">
-            Editor SQL
+            <span>✏️ Editor</span>
             <button class="btn-execute" onclick="executeSandboxSQL()">▶ Ejecutar</button>
           </div>
-          <textarea id="sandbox-editor" class="sql-editor" placeholder="Escribe cualquier consulta SQL aquí..."></textarea>
+          <textarea id="sandbox-editor" class="sql-editor" placeholder="Escribe cualquier consulta SQL..."></textarea>
         </div>
-        
         <div class="results-panel">
-          <div class="results-header">Resultados</div>
+          <div class="results-header">📋 Resultados</div>
           <div id="sandbox-results" class="results-content">
-            <p style="color: #999; text-align: center;">Ejecuta una consulta para ver los resultados</p>
+            <p style="color:var(--text-muted);text-align:center;margin-top:20px;">
+              Ejecuta una consulta para ver resultados
+            </p>
           </div>
         </div>
       </div>
     </div>
   `;
-  
-  // Actualizar clase activa en sidebar
-  updateActiveNavItem(element);
 }
 
-// Función para ejecutar SQL en sandbox
 function executeSandboxSQL() {
-  const editor = document.getElementById('sandbox-editor');
-  const code = editor.value;
-  const resultsContent = document.getElementById('sandbox-results');
-  
-  // Simular ejecución
-  resultsContent.innerHTML = `
-    <p style="color: #4CAF50;">✔ Consulta ejecutada correctamente</p>
-    <p>Mostrando resultados simulados...</p>
-    
+  const code = document.getElementById('sandbox-editor').value;
+  document.getElementById('sandbox-results').innerHTML = `
+    <p style="color:var(--success);margin-bottom:10px;">✔ Consulta ejecutada (modo sandbox)</p>
     <table class="result-table">
-      <thead>
-        <tr>
-          <th>Resultado</th>
-        </tr>
-      </thead>
+      <thead><tr><th>resultado</th><th>estado</th></tr></thead>
       <tbody>
-        <tr>
-          <td>Consulta ejecutada en modo sandbox</td>
-        </tr>
+        <tr><td>${code.substring(0,60).replace(/</g,'&lt;')}…</td><td style="color:var(--success);">OK</td></tr>
       </tbody>
     </table>
+    <p style="margin-top:10px;color:var(--text-muted);font-size:0.8rem;">Resultado simulado</p>
   `;
 }
 
-// Función para ver progreso
-function viewProgress(element) {
-  const mainArea = document.getElementById('main-area');
-  
-  mainArea.innerHTML = `
-    <div class="header">
+// ─────────────────────────────────────────────────────────────────
+// PROGRESO
+// ─────────────────────────────────────────────────────────────────
+function viewProgress(el) {
+  setActive(el);
+  const total = exerciseOrder.length;
+  document.getElementById('main-area').innerHTML = `
+    <div class="page-header">
       <h1>📊 Mi Progreso</h1>
-      <span class="tag">Estadísticas</span>
+      <span class="tag tag-theory">Estadísticas</span>
     </div>
-    
     <div class="card">
-      <h2>Ejercicios completados</h2>
-      
+      <h3 style="margin-bottom:16px;">Ejercicios disponibles</h3>
       <div class="progress-tracker">
-        ${Object.keys(exercises).map((ex, i) => `
-          <div class="progress-dot ${i < 3 ? 'completed' : ''} ${i === 3 ? 'current' : ''}">
-            ${i + 1}
-          </div>
-        `).join('')}
+        ${exerciseOrder.map((id, i) => {
+          const ex = exercises[id];
+          return `<div class="progress-dot" title="${ex?.title || id}" onclick="loadExercise('${id}')" style="cursor:pointer;">${i+1}</div>`;
+        }).join('')}
       </div>
-      
-      <h3 style="margin-top: 30px;">Estadísticas de aprendizaje</h3>
-      
-      <div class="stats-panel">
+      <div class="stats-panel" style="justify-content:flex-start;margin-top:24px;">
         <div class="stat-card">
-          <div class="stat-number">3</div>
-          <div class="stat-label">Completados</div>
+          <div class="stat-number">${total}</div>
+          <div class="stat-label">Total ejercicios</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">1</div>
-          <div class="stat-label">En progreso</div>
+          <div class="stat-number">2</div>
+          <div class="stat-label">Temas de teoría</div>
         </div>
         <div class="stat-card">
-          <div class="stat-number">${Object.keys(exercises).length - 4}</div>
-          <div class="stat-label">Pendientes</div>
+          <div class="stat-number">4</div>
+          <div class="stat-label">Niveles</div>
         </div>
       </div>
+      <p style="margin-top:20px;font-size:0.85rem;color:var(--text-muted);">
+        Haz clic en cualquier número para ir directamente a ese ejercicio.
+      </p>
     </div>
   `;
-  
-  // Actualizar clase activa en sidebar
-  updateActiveNavItem(element);
 }
 
-// Mostrar pantalla de bienvenida al cargar
-window.onload = function() {
-  showWelcome();
-};
+// ─────────────────────────────────────────────────────────────────
+// BÚSQUEDA
+// ─────────────────────────────────────────────────────────────────
+function searchExercises(query) {
+  const q = query.toLowerCase();
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.style.display = item.textContent.toLowerCase().includes(q) ? 'flex' : 'none';
+  });
+  if (!q) {
+    document.querySelectorAll('.category').forEach(c => c.style.display = 'block');
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────────────────────────
+window.onload = () => showWelcome(document.querySelector('.nav-item'));
 </script>
 </body>
 </html>
