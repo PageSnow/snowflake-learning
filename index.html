@@ -2,34 +2,60 @@
 <html>
 <head>
   <title>Snowflake Learning Hub</title>
-</head>
-<body style="font-family: Arial; padding: 40px;">
-
-  <h1>🚀 Snowflake Learning Hub</h1>
-  <p>Aprende Snowflake en español</p>
-
-  <select id="topic">
-    <option value="warehouse">Warehouse</option>
-    <option value="snowpipe">Snowpipe</option>
-    <option value="stream">Stream</option>
-  </select>
-
-  <button onclick="learn()">Aprender</button>
-
-  <p id="content"></p>
-
-  <script>
-    const data = {
-      warehouse: "Un Warehouse es el motor de cómputo en Snowflake.",
-      snowpipe: "Snowpipe permite cargar datos automáticamente.",
-      stream: "Stream permite capturar cambios en datos."
-    };
-
-    function learn() {
-      const topic = document.getElementById("topic").value;
-      document.getElementById("content").innerText = data[topic];
+  <style>
+    body { font-family: Arial; display: flex; margin: 0; }
+    .sidebar {
+      width: 250px;
+      background: #111;
+      color: white;
+      height: 100vh;
+      padding: 20px;
     }
-  </script>
+    .sidebar h2 { color: #00c3ff; }
+    .sidebar div {
+      margin: 10px 0;
+      cursor: pointer;
+    }
+    .content {
+      padding: 30px;
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="sidebar">
+  <h2>Snowflake</h2>
+  <div onclick="load('intro')">📘 Introducción</div>
+  <div onclick="load('warehouse')">⚙️ Warehouse</div>
+  <div onclick="load('snowpipe')">🚀 Snowpipe</div>
+  <div onclick="load('stream')">🔄 Streams</div>
+  <div onclick="load('task')">⏱️ Tasks</div>
+</div>
+
+<div class="content">
+  <h1>🚀 Snowflake Learning Hub</h1>
+  <p id="text">Selecciona un tema 👈</p>
+</div>
+
+<script>
+const data = {
+  intro: "Snowflake es una plataforma cloud para almacenamiento y análisis de datos. Permite escalar computo y almacenamiento de forma independiente.",
+  
+  warehouse: "Un Warehouse es el motor de cómputo que ejecuta consultas SQL. Puedes escalarlo según la carga de trabajo.",
+  
+  snowpipe: "Snowpipe permite la carga automática de datos en Snowflake en tiempo casi real desde archivos.",
+  
+  stream: "Stream permite capturar cambios en tablas (insert, update, delete) para procesamiento incremental.",
+  
+  task: "Task permite automatizar procesos SQL, ejecutando consultas en horarios o eventos definidos."
+};
+
+function load(topic) {
+  document.getElementById("text").innerText = data[topic];
+}
+</script>
 
 </body>
 </html>
