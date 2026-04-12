@@ -1,24 +1,212 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Snowflake Learning Hub</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snowflake Learning Hub - Guía Completa en Español</title>
   <style>
-    body { font-family: Arial; display: flex; margin: 0; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      min-height: 100vh;
+      background: #f5f7fa;
+      color: #2c3e50;
+    }
+    
     .sidebar {
-      width: 250px;
-      background: #111;
+      width: 280px;
+      background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
       color: white;
       height: 100vh;
-      padding: 20px;
+      position: fixed;
+      overflow-y: auto;
+      padding: 25px 20px;
+      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
     }
-    .sidebar h2 { color: #00c3ff; }
-    .sidebar div {
-      margin: 10px 0;
+    
+    .sidebar h2 { 
+      color: #00d4ff; 
+      margin-bottom: 25px;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .search-box {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 20px;
+      background: rgba(255,255,255,0.1);
+      color: white;
+      font-size: 14px;
+    }
+    
+    .search-box::placeholder { color: #aaa; }
+    
+    .category {
+      margin-top: 20px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #00d4ff;
+      opacity: 0.8;
+      margin-bottom: 10px;
+    }
+    
+    .nav-item {
+      padding: 12px 15px;
+      margin: 5px 0;
+      border-radius: 8px;
       cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
     }
+    
+    .nav-item:hover {
+      background: rgba(0,195,255,0.15);
+      transform: translateX(5px);
+    }
+    
+    .nav-item.active {
+      background: rgba(0,195,255,0.25);
+      border-left: 3px solid #00d4ff;
+    }
+    
     .content {
-      padding: 30px;
+      margin-left: 280px;
       flex: 1;
+      padding: 40px;
+      max-width: 900px;
+    }
+    
+    .header {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+    
+    .header h1 {
+      color: #1a1a2e;
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    
+    .tag {
+      display: inline-block;
+      background: #00d4ff;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-right: 10px;
+    }
+    
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+      border-left: 4px solid #00d4ff;
+    }
+    
+    .card h2 {
+      color: #1a1a2e;
+      margin-bottom: 15px;
+      font-size: 1.8rem;
+    }
+    
+    .card p {
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 20px;
+      font-size: 1.05rem;
+    }
+    
+    .code-block {
+      background: #1e1e1e;
+      color: #d4d4d4;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin: 15px 0;
+      position: relative;
+    }
+    
+    .code-block::before {
+      content: "SQL";
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 0.75rem;
+      color: #666;
+    }
+    
+    .highlight { color: #569cd6; }
+    .string { color: #ce9178; }
+    .comment { color: #6a9955; }
+    
+    .info-box {
+      background: #e3f2fd;
+      border-left: 4px solid #2196f3;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+    }
+    
+    .warning-box {
+      background: #fff3e0;
+      border-left: 4px solid #ff9800;
+      padding: 15px;
+      border-radius: 4px;
+      margin: 15px 0;
+    }
+    
+    .btn-next {
+      background: #00d4ff;
+      color: white;
+      padding: 12px 30px;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-top: 20px;
+      transition: transform 0.2s;
+    }
+    
+    .btn-next:hover { transform: translateY(-2px); }
+    
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      margin-bottom: 30px;
+      overflow: hidden;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00d4ff, #0099cc);
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+    
+    @media (max-width: 768px) {
+      .sidebar { width: 100%; position: relative; height: auto; }
+      .content { margin-left: 0; }
+      body { flex-direction: column; }
     }
   </style>
 </head>
@@ -26,105 +214,437 @@
 <body>
 
 <div class="sidebar">
-  <h2>Snowflake</h2>
-  <div onclick="load('intro')">📘 Introducción</div>
-  <div onclick="load('warehouse')">⚙️ Warehouse</div>
-  <div onclick="load('snowpipe')">🚀 Snowpipe</div>
-  <div onclick="load('stream')">🔄 Streams</div>
-  <div onclick="load('task')">⏱️ Tasks</div>
+  <h2>❄️ Snowflake Hub</h2>
+  <input type="text" class="search-box" placeholder="🔍 Buscar tema..." onkeyup="searchTopics(this.value)">
+  
+  <div class="category">Fundamentos</div>
+  <div class="nav-item active" onclick="load('intro', this)">📘 Introducción</div>
+  <div class="nav-item" onclick="load('arquitectura', this)">🏗️ Arquitectura</div>
+  <div class="nav-item" onclick="load('warehouse', this)">⚙️ Warehouse</div>
+  
+  <div class="category">Objetos</div>
+  <div class="nav-item" onclick="load('database', this)">🗄️ Database</div>
+  <div class="nav-item" onclick="load('schema', this)">📂 Schema</div>
+  <div class="nav-item" onclick="load('table', this)">📊 Tables</div>
+  <div class="nav-item" onclick="load('view', this)">👁️ Views</div>
+  <div class="nav-item" onclick="load('stage', this)">📥 Stages</div>
+  
+  <div class="category">Carga de Datos</div>
+  <div class="nav-item" onclick="load('snowpipe', this)">🚀 Snowpipe</div>
+  <div class="nav-item" onclick="load('copy', this)">📤 COPY INTO</div>
+  <div class="nav-item" onclick="load('stream', this)">🔄 Streams</div>
+  
+  <div class="category">Automatización</div>
+  <div class="nav-item" onclick="load('task', this)">⏱️ Tasks</div>
+  
+  <div class="category">Avanzado</div>
+  <div class="nav-item" onclick="load('time_travel', this)">⏳ Time Travel</div>
+  <div class="nav-item" onclick="load('snowpark', this)">🐍 Snowpark</div>
+  <div class="nav-item" onclick="load('security', this)">🔐 Seguridad</div>
 </div>
 
 <div class="content">
-  <h1>🚀 Snowflake Learning Hub</h1>
-  <p id="text">Selecciona un tema 👈</p>
+  <div class="progress-bar">
+    <div class="progress-fill" id="progress"></div>
+  </div>
+  
+  <div id="content-area">
+    <!-- El contenido se carga dinámicamente aquí -->
+  </div>
 </div>
 
 <script>
 const data = {
+  intro: {
+    title: "Introducción a Snowflake",
+    tag: "Fundamentos",
+    content: `
+      <p>Snowflake es una plataforma de datos en la nube revolucionaria que separa completamente el almacenamiento del procesamiento. 
+      Esto permite escalar cada componente de forma independiente y pagar únicamente por lo que usas.</p>
+      
+      <div class="info-box">
+        <strong>💡 Ventaja clave:</strong> A diferencia de las bases de datos tradicionales, Snowflake gestiona automáticamente 
+        la infraestructura, el tuning de rendimiento y la disponibilidad.
+      </div>
+      
+      <h3>Características principales:</h3>
+      <ul style="margin-left: 20px; line-height: 2;">
+        <li>Arquitectura multi-cluster compartida</li>
+        <li>Separación de almacenamiento y cómputo</li>
+        <li>Soporte nativo para datos semiestructurados (JSON, XML, Avro)</li>
+        <li>Time Travel y Fail-safe integrados</li>
+        <li>Zero-copy cloning</li>
+      </ul>
+    `
+  },
+  
+  arquitectura: {
+    title: "Arquitectura de Snowflake",
+    tag: "Fundamentos",
+    content: `
+      <p>La arquitectura de Snowflake tiene 3 capas distintas que trabajan en conjunto:</p>
+      
+      <div class="card" style="border-left-color: #ff6b6b;">
+        <h3>🏢 1. Capa de Almacenamiento</h3>
+        <p>Utiliza almacenamiento en cloud (AWS S3, Azure Blob, GCS). Los datos se organizan en 
+        <strong>micro-particiones</strong> de 50-500 MB comprimidas en columnar.</p>
+      </div>
+      
+      <div class="card" style="border-left-color: #4ecdc4;">
+        <h3>⚡ 2. Capa de Cómputo (Virtual Warehouses)</h3>
+        <p>Múltiples clusters independientes que procesan consultas. Pueden escalar verticalmente 
+        (más recursos) u horizontalmente (más clusters).</p>
+      </div>
+      
+      <div class="card" style="border-left-color: #45b7d1;">
+        <h3>🎛️ 3. Capa de Servicios</h3>
+        <p>Gestiona autenticación, optimización de consultas, metadatos y control de acceso. 
+        Es el "cerebro" que coordina todo.</p>
+      </div>
+      
+      <div class="code-block">
+<span class="comment">-- Ver información de tu cuenta</span>
+<span class="highlight">SELECT</span> CURRENT_REGION(), CURRENT_ACCOUNT(), CURRENT_USER();
+      </div>
+    `
+  },
+  
+  warehouse: {
+    title: "Virtual Warehouses",
+    tag: "Fundamentos",
+    content: `
+      <p>Un Warehouse es el motor de cómputo que ejecuta consultas SQL en Snowflake. 
+      Es completamente independiente del almacenamiento de datos.</p>
+      
+      <div class="warning-box">
+        <strong>⚠️ Importante:</strong> Los warehouses consumen créditos cuando están en ejecución. 
+        Configura auto-suspend para optimizar costos.
+      </div>
+      
+      <h3>Tamaños disponibles:</h3>
+      <div class="code-block">
+X-Small   → 1 nodo   (crédito/hora)
+Small     → 2 nodos  (2 créditos/hora)
+Medium    → 4 nodos  (4 créditos/hora)
+Large     → 8 nodos  (8 créditos/hora)
+X-Large   → 16 nodos (16 créditos/hora)
+...
+6X-Large  → 512 nodos (512 créditos/hora)
+      </div>
+      
+      <div class="code-block">
+<span class="comment">-- Crear un warehouse</span>
+<span class="highlight">CREATE WAREHOUSE</span> mi_warehouse
+  <span class="highlight">WITH</span> WAREHOUSE_SIZE = <span class="string">'SMALL'</span>
+  AUTO_SUSPEND = <span class="highlight">300</span>  <span class="comment">-- Suspender después de 5 min de inactividad</span>
+  AUTO_RESUME = <span class="highlight">TRUE</span>;
+      </div>
+    `
+  },
+  
+  database: {
+    title: "Databases y Schemas",
+    tag: "Objetos",
+    content: `
+      <p>En Snowflake, la jerarquía de objetos es: <strong>Account → Database → Schema → Objeto</strong></p>
+      
+      <div class="code-block">
+<span class="comment">-- Crear una base de datos</span>
+<span class="highlight">CREATE DATABASE</span> ventas_db;
 
-intro: "Snowflake es una plataforma de datos en la nube que separa almacenamiento y cómputo. Permite escalar de forma independiente y pagar solo por uso.",
+<span class="comment">-- Usar la base de datos</span>
+<span class="highlight">USE DATABASE</span> ventas_db;
 
-arquitectura: "La arquitectura de Snowflake tiene 3 capas: almacenamiento (datos en cloud), cómputo (warehouses) y servicios (gestión, seguridad, optimización).",
+<span class="comment">-- Crear un schema</span>
+<span class="highlight">CREATE SCHEMA</span> raw_data;
 
-warehouse: "Un Warehouse es el motor de cómputo que ejecuta consultas SQL. Puede escalarse vertical y horizontalmente.",
+<span class="comment">-- Ver estructura</span>
+<span class="highlight">SHOW</span> SCHEMAS <span class="highlight">IN DATABASE</span> ventas_db;
+      </div>
+      
+      <div class="info-box">
+        <strong>📌 Nota:</strong> Cada database tiene automáticamente los schemas: 
+        <code>PUBLIC</code>, <code>INFORMATION_SCHEMA</code> y <code>ACCOUNT_USAGE</code>
+      </div>
+    `
+  },
+  
+  table: {
+    title: "Tablas en Snowflake",
+    tag: "Objetos",
+    content: `
+      <p>Snowflake soporta tablas permanentes, transitorias, temporales y externas.</p>
+      
+      <div class="code-block">
+<span class="comment">-- Tabla permanente (persiste después de la sesión)</span>
+<span class="highlight">CREATE TABLE</span> clientes (
+    id <span class="highlight">NUMBER</span> AUTOINCREMENT,
+    nombre <span class="highlight">VARCHAR</span>(100),
+    email <span class="highlight">VARCHAR</span>(100),
+    fecha_registro <span class="highlight">TIMESTAMP DEFAULT</span> CURRENT_TIMESTAMP(),
+    datos_json <span class="highlight">VARIANT</span>  <span class="comment">-- Para JSON</span>
+);
 
-database: "Una base de datos en Snowflake contiene esquemas, tablas y vistas. Es un contenedor lógico de información.",
+<span class="comment">-- Tabla temporal (se elimina al finalizar sesión)</span>
+<span class="highlight">CREATE TEMPORARY TABLE</span> temp_ventas <span class="highlight">AS</span>
+<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> ventas <span class="highlight">WHERE</span> fecha >= <span class="string">'2024-01-01'</span>;
+      </div>
+      
+      <h3>Tipos de datos comunes:</h3>
+      <ul style="margin-left: 20px; line-height: 2;">
+        <li><code>NUMBER(p,s)</code> - Numéricos con precisión</li>
+        <li><code>VARCHAR(n)</code> - Texto variable</li>
+        <li><code>TIMESTAMP_NTZ/TZ/LTZ</code> - Fechas y horas</li>
+        <li><code>VARIANT</code> - Datos semiestructurados</li>
+        <li><code>ARRAY</code> y <code>OBJECT</code> - Colecciones</li>
+      </ul>
+    `
+  },
+  
+  snowpipe: {
+    title: "Snowpipe - Carga Continua",
+    tag: "Carga de Datos",
+    content: `
+      <p>Snowpipe permite cargar datos automáticamente en tiempo casi real desde 
+      almacenamiento en cloud (S3, Azure, GCS) sin necesidad de usar COPY manualmente.</p>
+      
+      <div class="code-block">
+<span class="comment">-- 1. Crear stage externo apuntando a S3</span>
+<span class="highlight">CREATE STAGE</span> mi_stage
+  URL = <span class="string">'s3://mi-bucket/datos/'</span>
+  STORAGE_INTEGRATION = aws_integration;
 
-schema: "Un schema organiza objetos como tablas y vistas dentro de una base de datos.",
+<span class="comment">-- 2. Crear el pipe</span>
+<span class="highlight">CREATE PIPE</span> mi_pipe
+  AUTO_INGEST = <span class="highlight">TRUE</span>  <span class="comment">-- Detecta automáticamente nuevos archivos</span>
+<span class="highlight">AS</span>
+<span class="highlight">COPY INTO</span> mi_tabla
+<span class="highlight">FROM</span> @mi_stage
+FILE_FORMAT = (TYPE = <span class="string">'JSON'</span>);
+      </div>
+      
+      <div class="info-box">
+        <strong>🚀 Ventaja:</strong> Snowpipe usa recursos serverless, así que solo pagas 
+        por los segundos de procesamiento utilizados.
+      </div>
+    `
+  },
+  
+  stream: {
+    title: "Streams - Captura de Cambios",
+    tag: "Carga de Datos",
+    content: `
+      <p>Los Streams capturan cambios (INSERT, UPDATE, DELETE) en tablas para 
+      procesamiento incremental (Change Data Capture).</p>
+      
+      <div class="code-block">
+<span class="comment">-- Crear un stream en una tabla</span>
+<span class="highlight">CREATE STREAM</span> stream_clientes
+<span class="highlight">ON TABLE</span> clientes
+APPEND_ONLY = <span class="highlight">FALSE</span>;  <span class="comment">-- Captura todos los cambios</span>
 
-table: "Una tabla almacena datos estructurados en filas y columnas.",
+<span class="comment">-- Consultar cambios pendientes</span>
+<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> stream_clientes;
 
-view: "Una vista es una consulta guardada que se comporta como tabla virtual.",
+<span class="comment">-- Columnas especiales del stream:</span>
+<span class="comment">-- METADATA$ACTION: INSERT o DELETE</span>
+<span class="comment">-- METADATA$ISUPDATE: TRUE si fue UPDATE</span>
+<span class="comment">-- METADATA$ROW_ID: ID único de la fila</span>
+      </div>
+      
+      <div class="warning-box">
+        <strong>⚠️ Nota:</strong> Un stream se "consume" cuando se usa en una DML. 
+        Después de INSERT/UPDATE usando el stream, los datos desaparecen del stream.
+      </div>
+    `
+  },
+  
+  task: {
+    title: "Tasks - Automatización SQL",
+    tag: "Automatización",
+    content: `
+      <p>Los Tasks permiten programar la ejecución de consultas SQL en horarios específicos 
+      o basados en eventos (como la finalización de otro task).</p>
+      
+      <div class="code-block">
+<span class="comment">-- Task simple: ejecutar cada hora</span>
+<span class="highlight">CREATE TASK</span> tarea_horaria
+  WAREHOUSE = <span class="string">'mi_warehouse'</span>
+  SCHEDULE = <span class="string">'USING CRON 0 * * * * UTC'</span>  <span class="comment">-- Cada hora</span>
+<span class="highlight">AS</span>
+<span class="highlight">INSERT INTO</span> resumen_horario
+<span class="highlight">SELECT</span> DATE_TRUNC(<span class="string">'hour'</span>, fecha), <span class="highlight">COUNT</span>(*)
+<span class="highlight">FROM</span> eventos
+<span class="highlight">GROUP BY</span> 1;
 
-stage: "Un stage es una ubicación donde se almacenan archivos antes de cargarlos a Snowflake.",
+<span class="comment">-- Task dependiente (DAG)</span>
+<span class="highlight">CREATE TASK</span> tarea_secundaria
+  WAREHOUSE = <span class="string">'mi_warehouse'</span>
+  AFTER tarea_horaria  <span class="comment">-- Se ejecuta cuando termina la primera</span>
+<span class="highlight">AS</span>
+<span class="highlight">CALL</span> proceso_siguiente();
+      </div>
+      
+      <div class="info-box">
+        <strong>💡 Tip:</strong> Combina Tasks + Streams para crear pipelines ELT 
+        completamente automáticos en Snowflake.
+      </div>
+    `
+  },
+  
+  time_travel: {
+    title: "Time Travel y Fail-Safe",
+    tag: "Avanzado",
+    content: `
+      <p>Snowflake mantiene automáticamente el historial de cambios de datos, 
+      permitiéndote "viajar en el tiempo" para recuperar versiones anteriores.</p>
+      
+      <div class="code-block">
+<span class="comment">-- Consultar datos de hace 2 horas</span>
+<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> mi_tabla <span class="highlight">AT</span> (OFFSET => -<span class="highlight">120</span> <span class="highlight">MINUTES</span>);
 
-snowpipe: "Snowpipe permite cargar datos automáticamente en tiempo casi real desde archivos externos.",
+<span class="comment">-- Consultar datos de ayer específico</span>
+<span class="highlight">SELECT</span> * <span class="highlight">FROM</span> mi_tabla <span class="highlight">AT</span> (TIMESTAMP => <span class="string">'2024-01-15 10:00:00'</span>::timestamp);
 
-copy: "El comando COPY INTO permite cargar datos desde archivos a tablas.",
+<span class="comment">-- Restaurar tabla eliminada (dentro de 24h)</span>
+<span class="highlight">UNDROP TABLE</span> mi_tabla;
 
-stream: "Un stream captura cambios en datos (insert, update, delete) para procesamiento incremental.",
+<span class="comment">-- Clonar tabla en punto anterior (zero-copy)</span>
+<span class="highlight">CREATE TABLE</span> tabla_backup <span class="highlight">CLONE</span> mi_tabla <span class="highlight">AT</span> (OFFSET => -<span class="highlight">86400</span>);
+      </div>
+      
+      <div class="warning-box">
+        <strong>⏰ Límites:</strong><br>
+        • Time Travel estándar: 1 día (Enterprise: hasta 90 días)<br>
+        • Fail-safe: 7 días adicionales (solo para recuperación por Soporte Snowflake)
+      </div>
+    `
+  },
+  
+  snowpark: {
+    title: "Snowpark - Python, Java, Scala",
+    tag: "Avanzado",
+    content: `
+      <p>Snowpark permite ejecutar código Python, Java o Scala directamente dentro de Snowflake, 
+      eliminando la necesidad de mover datos fuera de la plataforma.</p>
+      
+      <div class="code-block">
+<span class="comment">-- Crear UDF en Python</span>
+<span class="highlight">CREATE FUNCTION</span> limpiar_texto(texto <span class="highlight">STRING</span>)
+<span class="highlight">RETURNS STRING</span>
+<span class="highlight">LANGUAGE PYTHON</span>
+RUNTIME_VERSION = <span class="string">'3.8'</span>
+HANDLER = <span class="string">'clean'</span>
+<span class="highlight">AS</span> $$
+<span class="highlight">def</span> clean(text):
+    <span class="highlight">return</span> text.strip().lower().replace(<span class="string">'  '</span>, <span class="string">' '</span>)
+$$;
 
-task: "Un task automatiza la ejecución de consultas SQL en horarios definidos o eventos.",
+<span class="comment">-- Usar la función</span>
+<span class="highlight">SELECT</span> limpiar_texto(<span class="string">'  HOLA   MUNDO  '</span>);  <span class="comment">-- Resultado: 'hola mundo'</span>
+      </div>
+      
+      <div class="info-box">
+        <strong>🐍 Ventajas de Snowpark:</strong><br>
+        • Procesamiento de datos sin moverlos (pushdown)<br>
+        • Acceso a librerías de Python como pandas, scikit-learn<br>
+        • Stored Procedures en tu lenguaje preferido<br>
+        • Integración con Notebooks (Snowflake Notebooks)
+      </div>
+    `
+  },
+  
+  security: {
+    title: "Seguridad y Gobierno",
+    tag: "Avanzado",
+    content: `
+      <p>Snowflake ofrece seguridad integral con RBAC (Control de Acceso Basado en Roles), 
+      encriptación automática y masking de datos.</p>
+      
+      <div class="code-block">
+<span class="comment">-- Crear rol y asignar permisos</span>
+<span class="highlight">CREATE ROLE</span> analista;
+<span class="highlight">GRANT USAGE ON DATABASE</span> ventas_db <span class="highlight">TO ROLE</span> analista;
+<span class="highlight">GRANT SELECT ON ALL TABLES IN SCHEMA</span> ventas_db.public <span class="highlight">TO ROLE</span> analista;
 
-time_travel: "Time Travel permite consultar versiones anteriores de los datos.",
+<span class="comment">-- Masking de datos sensibles</span>
+<span class="highlight">CREATE MASKING POLICY</span> email_mask <span class="highlight">AS</span> (val <span class="highlight">STRING</span>) <span class="highlight">RETURNS STRING</span> ->
+  <span class="highlight">CASE</span>
+    <span class="highlight">WHEN</span> CURRENT_ROLE() <span class="highlight">IN</span> (<span class="string">'ADMIN'</span>) <span class="highlight">THEN</span> val
+    <span class="highlight">ELSE</span> REGEXP_REPLACE(val, <span class="string">'.+@'</span>, <span class="string">'***@'</span>)
+  <span class="highlight">END</span>;
 
-fail_safe: "Fail-safe es un mecanismo de recuperación de datos en caso de fallos graves.",
-
-clustering: "Clustering mejora el rendimiento organizando los datos según claves específicas.",
-
-micro_partitions: "Snowflake divide datos en micro-particiones optimizadas automáticamente.",
-
-semi_structured: "Snowflake soporta datos JSON, XML y AVRO usando el tipo VARIANT.",
-
-variant: "VARIANT permite almacenar datos semiestructurados dentro de una tabla.",
-
-query: "Una query es una instrucción SQL que consulta o modifica datos.",
-
-joins: "Los joins permiten combinar datos de múltiples tablas.",
-
-window_functions: "Las funciones de ventana permiten cálculos avanzados sobre conjuntos de filas.",
-
-security: "Snowflake ofrece control de acceso basado en roles (RBAC).",
-
-roles: "Los roles controlan permisos sobre objetos.",
-
-masking: "El data masking protege datos sensibles.",
-
-sharing: "Data sharing permite compartir datos entre cuentas sin duplicarlos.",
-
-marketplace: "Snowflake Marketplace permite acceder a datasets externos.",
-
-snowpark: "Snowpark permite programar en Python, Java y Scala dentro de Snowflake.",
-
-udf: "Las UDF son funciones definidas por el usuario para lógica personalizada.",
-
-stored_procedures: "Permiten ejecutar lógica compleja dentro de Snowflake.",
-
-performance: "El rendimiento se optimiza con warehouses adecuados y buen diseño de queries.",
-
-cost: "Snowflake cobra por uso de cómputo y almacenamiento.",
-
-best_practices: "Buenas prácticas incluyen usar clustering, evitar SELECT *, y dimensionar warehouses.",
-
-etl: "Snowflake se usa en procesos ETL para transformación de datos.",
-
-elt: "Snowflake promueve ELT (transformación dentro del sistema)."
-
+<span class="highlight">ALTER TABLE</span> clientes <span class="highlight">MODIFY COLUMN</span> email 
+<span class="highlight">SET MASKING POLICY</span> email_mask;
+      </div>
+      
+      <p>Características de seguridad adicionales:</p>
+      <ul style="margin-left: 20px; line-height: 2;">
+        <li>🔐 Encriptación en reposo y en tránsito (AES-256)</li>
+        <li>👥 Autenticación MFA y SSO (SAML 2.0, OAuth)</li>
+        <li>📊 Row Access Policies (control a nivel de fila)</li>
+        <li>🔍 Auditing completo via ACCOUNT_USAGE</li>
+        <li>🌐 PrivateLink para conectividad privada</li>
+      </ul>
+    `
+  }
 };
 
-function load(topic) {
-  document.getElementById("text").innerText = data[topic];
+let currentTopic = 'intro';
+const totalTopics = Object.keys(data).length;
+
+function load(topic, element) {
+  currentTopic = topic;
+  const content = data[topic];
+  
+  // Actualizar navegación activa
+  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+  if (element) element.classList.add('active');
+  
+  // Renderizar contenido
+  document.getElementById('content-area').innerHTML = `
+    <div class="header">
+      <span class="tag">${content.tag}</span>
+      <h1>${content.title}</h1>
+    </div>
+    <div class="card">
+      ${content.content}
+      <button class="btn-next" onclick="nextTopic()">Siguiente tema →</button>
+    </div>
+  `;
+  
+  // Actualizar progreso
+  const topics = Object.keys(data);
+  const currentIndex = topics.indexOf(topic) + 1;
+  document.getElementById('progress').style.width = (currentIndex / totalTopics * 100) + '%';
+  
+  // Scroll al inicio
+  window.scrollTo(0, 0);
 }
+
+function nextTopic() {
+  const topics = Object.keys(data);
+  const currentIndex = topics.indexOf(currentTopic);
+  if (currentIndex < topics.length - 1) {
+    const nextTopic = topics[currentIndex + 1];
+    const nextElement = document.querySelector(`[onclick="load('${nextTopic}', this)"]`);
+    load(nextTopic, nextElement);
+  }
+}
+
+function searchTopics(query) {
+  const items = document.querySelectorAll('.nav-item');
+  query = query.toLowerCase();
+  
+  items.forEach(item => {
+    const text = item.textContent.toLowerCase();
+    item.style.display = text.includes(query) ? 'flex' : 'none';
+  });
+}
+
+// Cargar tema inicial
+load('intro', document.querySelector('.nav-item'));
 </script>
 
-  <div onclick="load('arquitectura')">🏗️ Arquitectura</div>
-<div onclick="load('database')">🗄️ Database</div>
-<div onclick="load('schema')">📂 Schema</div>
-<div onclick="load('table')">📊 Table</div>
-<div onclick="load('view')">👁️ View</div>
-<div onclick="load('stage')">📥 Stage</div>
-<div onclick="load('copy')">📤 COPY</div>
-<div onclick="load('time_travel')">⏳ Time Travel</div>
-<div onclick="load('security')">🔐 Security</div>
-<div onclick="load('snowpark')">🐍 Snowpark</div>
-<div onclick="load('performance')">⚡ Performance</div>
+</body>
+</html>
