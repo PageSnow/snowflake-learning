@@ -41,21 +41,78 @@
 
 <script>
 const data = {
-  intro: "Snowflake es una plataforma cloud para almacenamiento y análisis de datos. Permite escalar computo y almacenamiento de forma independiente.",
-  
-  warehouse: "Un Warehouse es el motor de cómputo que ejecuta consultas SQL. Puedes escalarlo según la carga de trabajo.",
-  
-  snowpipe: "Snowpipe permite la carga automática de datos en Snowflake en tiempo casi real desde archivos.",
-  
-  stream: "Stream permite capturar cambios en tablas (insert, update, delete) para procesamiento incremental.",
-  
-  task: "Task permite automatizar procesos SQL, ejecutando consultas en horarios o eventos definidos."
+
+intro: "Snowflake es una plataforma de datos en la nube que separa almacenamiento y cómputo. Permite escalar de forma independiente y pagar solo por uso.",
+
+arquitectura: "La arquitectura de Snowflake tiene 3 capas: almacenamiento (datos en cloud), cómputo (warehouses) y servicios (gestión, seguridad, optimización).",
+
+warehouse: "Un Warehouse es el motor de cómputo que ejecuta consultas SQL. Puede escalarse vertical y horizontalmente.",
+
+database: "Una base de datos en Snowflake contiene esquemas, tablas y vistas. Es un contenedor lógico de información.",
+
+schema: "Un schema organiza objetos como tablas y vistas dentro de una base de datos.",
+
+table: "Una tabla almacena datos estructurados en filas y columnas.",
+
+view: "Una vista es una consulta guardada que se comporta como tabla virtual.",
+
+stage: "Un stage es una ubicación donde se almacenan archivos antes de cargarlos a Snowflake.",
+
+snowpipe: "Snowpipe permite cargar datos automáticamente en tiempo casi real desde archivos externos.",
+
+copy: "El comando COPY INTO permite cargar datos desde archivos a tablas.",
+
+stream: "Un stream captura cambios en datos (insert, update, delete) para procesamiento incremental.",
+
+task: "Un task automatiza la ejecución de consultas SQL en horarios definidos o eventos.",
+
+time_travel: "Time Travel permite consultar versiones anteriores de los datos.",
+
+fail_safe: "Fail-safe es un mecanismo de recuperación de datos en caso de fallos graves.",
+
+clustering: "Clustering mejora el rendimiento organizando los datos según claves específicas.",
+
+micro_partitions: "Snowflake divide datos en micro-particiones optimizadas automáticamente.",
+
+semi_structured: "Snowflake soporta datos JSON, XML y AVRO usando el tipo VARIANT.",
+
+variant: "VARIANT permite almacenar datos semiestructurados dentro de una tabla.",
+
+query: "Una query es una instrucción SQL que consulta o modifica datos.",
+
+joins: "Los joins permiten combinar datos de múltiples tablas.",
+
+window_functions: "Las funciones de ventana permiten cálculos avanzados sobre conjuntos de filas.",
+
+security: "Snowflake ofrece control de acceso basado en roles (RBAC).",
+
+roles: "Los roles controlan permisos sobre objetos.",
+
+masking: "El data masking protege datos sensibles.",
+
+sharing: "Data sharing permite compartir datos entre cuentas sin duplicarlos.",
+
+marketplace: "Snowflake Marketplace permite acceder a datasets externos.",
+
+snowpark: "Snowpark permite programar en Python, Java y Scala dentro de Snowflake.",
+
+udf: "Las UDF son funciones definidas por el usuario para lógica personalizada.",
+
+stored_procedures: "Permiten ejecutar lógica compleja dentro de Snowflake.",
+
+performance: "El rendimiento se optimiza con warehouses adecuados y buen diseño de queries.",
+
+cost: "Snowflake cobra por uso de cómputo y almacenamiento.",
+
+best_practices: "Buenas prácticas incluyen usar clustering, evitar SELECT *, y dimensionar warehouses.",
+
+etl: "Snowflake se usa en procesos ETL para transformación de datos.",
+
+elt: "Snowflake promueve ELT (transformación dentro del sistema)."
+
 };
 
 function load(topic) {
   document.getElementById("text").innerText = data[topic];
 }
 </script>
-
-</body>
-</html>
