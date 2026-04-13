@@ -78,7 +78,48 @@
       outline: none;
       transition: border-color 0.2s;
     }
+.quiz-question {
+  margin-bottom: 18px;
+}
 
+.quiz-question h4 {
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.quiz-option {
+  padding: 8px 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.quiz-option:hover {
+  border-color: var(--accent);
+}
+
+.quiz-option.correct {
+  border-color: var(--success);
+  background: rgba(61,220,132,0.12);
+}
+
+.quiz-option.incorrect {
+  border-color: var(--danger);
+  background: rgba(255,94,94,0.12);
+}
+
+.quiz-explanation {
+  margin-top: 8px;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+}
+
+
+
+
+    
     .search-box:focus { border-color: var(--accent); }
 
     .category {
@@ -1240,6 +1281,146 @@ function loadTheory(topic, el) {
   `;
 }
 
+<script>
+const conceptQuizzes = {
+
+  arquitectura_snowflake: {
+    title: "Conceptos · Arquitectura de Snowflake",
+    description: "Evalúa tu conocimiento sobre la arquitectura multicapa de Snowflake.",
+    questions: [
+
+      {
+        type: "true_false",
+        question: "Snowflake separa completamente el almacenamiento del cómputo.",
+        answer: true,
+        explanation: "Snowflake desacopla almacenamiento en cloud y procesamiento mediante Virtual Warehouses."
+      },
+
+      {
+        type: "multiple",
+        question: "¿Cuántas capas principales tiene la arquitectura de Snowflake?",
+        options: [
+          "1 capa",
+          "2 capas",
+          "3 capas",
+          "4 capas"
+        ],
+        answer: 2,
+        explanation: "Snowflake tiene 3 capas: almacenamiento, cómputo y servicios."
+      },
+
+      {
+        type: "true_false",
+        question: "Las micro‑particiones son gestionadas manualmente por el usuario.",
+        answer: false,
+        explanation: "Las micro‑particiones se gestionan automáticamente por Snowflake."
+      },
+
+      {
+        type: "multiple",
+        question: "¿Qué tamaño aproximado tienen las micro‑particiones?",
+        options: [
+          "1–5 MB",
+          "10–20 MB",
+          "50–500 MB",
+          "Más de 1 GB"
+        ],
+        answer: 2,
+        explanation: "Las micro‑particiones suelen tener entre 50 y 500 MB."
+      }
+
+    ]
+  },
+
+  virtual_warehouses: {
+    title: "Conceptos · Virtual Warehouses",
+    description: "Comprueba tu entendimiento sobre cómputo, escalabilidad y consumo.",
+    questions: [
+
+      {
+        type: "true_false",
+        question: "Un Virtual Warehouse puede ser usado simultáneamente por múltiples usuarios.",
+        answer: true,
+        explanation: "Snowflake permite múltiples consultas concurrentes en un warehouse."
+      },
+
+      {
+        type: "multiple",
+        question: "¿Qué acción reduce costos cuando no hay consultas?",
+        options: [
+          "AUTO_RESUME",
+          "AUTO_SUSPEND",
+          "MULTI_CLUSTER",
+          "TIME TRAVEL"
+        ],
+        answer: 1,
+        explanation: "AUTO_SUSPEND detiene el warehouse cuando no se usa."
+      },
+
+      {
+        type: "true_false",
+        question: "Escalar un warehouse afecta el almacenamiento de datos.",
+        answer: false,
+        explanation: "El escalamiento solo afecta el cómputo, no el almacenamiento."
+      }
+
+    ]
+  }
+
+};
+</script>
+
+function loadConceptQuiz(id, el) {
+  const quiz = conceptQuizzes[id];
+  if (!quiz) return;
+
+  setActive(el);
+
+  let html = `
+    <div class="page-header">
+      <h1>${quiz.title}</h1>
+      <span class="tag tag-theory">Evaluación</span>
+    </div>
+
+    <div class="card">
+      <p style="color:var(--text-muted);margin-bottom:20px;">
+        ${quiz.description}
+      </p>
+  `;
+
+  quiz.questions.forEach((q, i) => {
+    html += `<div class="quiz-question"><h4>${i+1}. ${q.question}</h4>`;
+
+    if (q.type === "true_false") {
+      ["Verdadero", "Falso"].forEach((opt, idx) => {
+        const correct = (idx === 0) === q.answer;
+        html += `
+          <div class="quiz-option"
+               onclick="this.classList.add('${correct ? 'correct' : 'incorrect'}')">
+            ${opt}
+          </div>`;
+      });
+    }
+
+    if (q.type === "multiple") {
+      q.options.forEach((opt, idx) => {
+        html += `
+          <div class="quiz-option"
+               onclick="this.classList.add('${idx === q.answer ? 'correct' : 'incorrect'}')">
+            ${opt}
+          </div>`;
+      });
+    }
+
+    html += `<div class="quiz-explanation">${q.explanation}</div></div>`;
+  });
+
+  html += `</div>`;
+
+  document.getElementById("main-area").innerHTML = html;
+}
+
+  
 // ─────────────────────────────────────────────────────────────────
 // CARGAR EJERCICIO
 // ─────────────────────────────────────────────────────────────────
@@ -1644,5 +1825,9 @@ function loadLab(labId, el) {
   document.getElementById("main-area").innerHTML = html;
 }
 </script>
+<div class="category">Conceptos Snowflake</div>
+<div class="nav-item" onclick="loadConceptQuiz('arquitectura_snowflake', this)">🏗️ Arquitectura</div>
+<div class="nav-item" onclick="loadConceptQuiz('virtual_warehouses', this)">⚙️ Warehouses</div>
+
 
 
