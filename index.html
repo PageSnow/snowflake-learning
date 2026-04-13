@@ -2,63 +2,90 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Snowflake Learning Hub</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snowflake Learning Hub</title>
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Sora:wght@300;400;600;700&display=swap" rel="stylesheet===== */
-:root {
-  --bg:#0d0f1a;
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap" rel="--bg:#0d0f1a;
   --sidebar-bg:#0a0c16;
   --card-bg:#131625;
   --card-border:#1e2340;
   --accent:#29d4f5;
   --accent2:#7c6af7;
+  --accent3:#f7c948;
   --success:#3ddc84;
   --danger:#ff5e5e;
   --text:#e2e8f8;
-  --muted:#7a82a8;
+  --text-muted:#7a82a8;
 }
 
-/* ===== RESET ===== */
 *{margin:0;padding:0;box-sizing:border-box}
+
 body{
-  font-family:Sora,sans-serif;
+  font-family:'Sora',sans-serif;
+  display:flex;
   background:var(--bg);
   color:var(--text);
-  display:flex;
+  min-height:100vh;
 }
 
-/* ===== SIDEBAR ===== */
+/* ── SIDEBAR ── */
 .sidebar{
-  width:260px;
+  width:280px;
   background:var(--sidebar-bg);
-  padding:20px;
-  height:100vh;
+  border-right:1px solid var(--card-border);
+  padding:20px 16px;
   position:fixed;
+  height:100vh;
 }
-.nav-item{
-  padding:8px 12px;
-  border-radius:6px;
-  cursor:pointer;
-  color:var(--muted);
-  margin-bottom:4px;
+
+.sidebar-logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:20px;
 }
-.nav-item:hover{background:var(--card-bg);color:var(--text)}
-.nav-item.active{color:var(--accent);border-left:3px solid var(--accent)}
+
+.sidebar-logo h2{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-size:1.1rem;
+}
 
 .category{
-  margin-top:16px;
-  font-size:.7rem;
-  color:var(--muted);
+  font-size:.65rem;
+  letter-spacing:.12em;
+  color:var(--text-muted);
   text-transform:uppercase;
+  margin:14px 0 6px;
 }
 
-/* ===== CONTENT ===== */
+.nav-item{
+  padding:9px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  color:var(--text-muted);
+  font-size:.85rem;
+}
+
+.nav-item:hover{
+  background:var(--card-bg);
+  color:var(--text);
+}
+
+.nav-item.active{
+  color:var(--accent);
+  background:rgba(41,212,245,0.1);
+  border-left:3px solid var(--accent);
+}
+
+/* ── MAIN ── */
 .content{
-  margin-left:260px;
-  padding:30px;
+  margin-left:280px;
+  padding:36px 40px;
   width:100%;
 }
+
 .card{
   background:var(--card-bg);
   border:1px solid var(--card-border);
@@ -67,50 +94,67 @@ body{
   margin-bottom:20px;
 }
 
-/* ===== QUIZ ===== */
-.quiz-question{margin-bottom:20px}
+/* ── QUIZ ── */
+.quiz-question{margin-bottom:18px}
+.quiz-question h4{margin-bottom:8px;font-size:.95rem}
+
 .quiz-option{
-  border:1px solid var(--card-border);
   padding:8px 12px;
-  border-radius:6px;
+  border-radius:8px;
+  border:1px solid var(--card-border);
   margin-bottom:6px;
   cursor:pointer;
+  font-size:.85rem;
 }
-.quiz-option.correct{border-color:var(--success);background:rgba(61,220,132,.15)}
-.quiz-option.incorrect{border-color:var(--danger);background:rgba(255,94,94,.15)}
+
+.quiz-option:hover{border-color:var(--accent)}
+.quiz-option.correct{
+  border-color:var(--success);
+  background:rgba(61,220,132,.15);
+}
+.quiz-option.incorrect{
+  border-color:var(--danger);
+  background:rgba(255,94,94,.15);
+}
 </style>
 </head>
 
 <body>
 
+<!-- ═════════ Sidebar ═════════ -->
 <div class="sidebar">
+  <div class="sidebar-logo">
+    <span>❄️</span><h2>Snowflake Lab</h2>
+  </div>
+
   <div class="category">Teoría</div>
   <div class="nav-item" onclick="showWelcome(this)">🏠 Inicio</div>
 
-  <div class="category">Conceptos</div>
-  <div class="nav-item" onclick="loadConceptQuiz('arquitectura', this)">🏗 Arquitectura</div>
-  <div class="nav-item" onclick="loadConceptQuiz('warehouses', this)">⚙ Warehouses</div>
+  <div class="category">Conceptos Snowflake</div>
+  <div class="nav-item" onclick="loadConceptQuiz('arquitectura', this)">🏗️ Arquitectura</div>
+  <div class="nav-item" onclick="loadConceptQuiz('warehouses', this)">⚙️ Warehouses</div>
 </div>
 
+<!-- ═════════ Content ═════════ -->
 <div class="content">
   <div id="main-area"></div>
 </div>
 
 <script>
 /* ======================================================
-   QUIZZES – SNOWPRO STYLE
+   CONCEPT QUIZZES
 ====================================================== */
 const conceptQuizzes = {
 
   arquitectura:{
     title:"Arquitectura de Snowflake",
-    description:"Evaluación de arquitectura Snowflake.",
+    description:"Evaluación conceptual sobre la arquitectura multicapa.",
     questions:[
       {type:"tf", q:"Snowflake separa almacenamiento y cómputo.", a:true},
       {type:"tf", q:"Las micro‑particiones se crean manualmente.", a:false},
       {
         type:"mc",
-        q:"¿Cuántas capas tiene Snowflake?",
+        q:"¿Cuántas capas tiene la arquitectura de Snowflake?",
         opts:["1","2","3","4"],
         a:2
       }
@@ -119,38 +163,39 @@ const conceptQuizzes = {
 
   warehouses:{
     title:"Virtual Warehouses",
-    description:"Gestión de cómputo.",
+    description:"Conceptos sobre cómputo y consumo.",
     questions:[
       {type:"tf", q:"Un warehouse suspendido no consume créditos.", a:true},
       {
         type:"mc",
-        q:"¿Cuál reduce costos?",
+        q:"¿Qué funcionalidad reduce costos automáticamente?",
         opts:["AUTO_RESUME","AUTO_SUSPEND","TIME TRAVEL"],
         a:1
       }
     ]
   }
+
 };
 
 /* ======================================================
    HELPERS
 ====================================================== */
 function setActive(el){
-  document.querySelectorAll(".nav-item")
-    .forEach(i=>i.classList.remove("active"));
-  el.classList.add("active");
+  document.querySelectorAll('.nav-item')
+    .forEach(i=>i.classList.remove('active'));
+  if(el) el.classList.add('active');
 }
 
 /* ======================================================
-   UI
+   SCREENS
 ====================================================== */
 function showWelcome(el){
   setActive(el);
   document.getElementById("main-area").innerHTML = `
     <div class="card">
-      <h1>❄ Snowflake Learning Hub</h1>
-      <p style="color:var(--muted)">
-        Plataforma interactiva estilo SnowPro.
+      <h1>❄️ Snowflake Learning Hub</h1>
+      <p style="opacity:.7">
+        Plataforma interactiva para aprender Snowflake estilo SnowPro.
       </p>
     </div>
   `;
@@ -162,33 +207,43 @@ function loadConceptQuiz(id, el){
   let html = `
     <div class="card">
       <h2>${quiz.title}</h2>
-      <p style="color:var(--muted)">${quiz.description}</p>
+      <p style="opacity:.7">${quiz.description}</p>
   `;
 
   quiz.questions.forEach((q,i)=>{
-    html+=`<div class="quiz-question"><strong>${i+1}. ${q.q}</strong>`;
+    html += `<div class="quiz-question"><h4>${i+1}. ${q.q}</h4>`;
 
     if(q.type==="tf"){
-      ["Verdadero","Falso"].forEach((o,idx)=>{
+      ["Verdadero","Falso"].forEach((opt,idx)=>{
         const ok = (idx===0)===q.a;
-        html+=`<div class="quiz-option"
-          onclick="this.classList.add('${ok?'correct':'incorrect'}')">${o}</div>`;
+        html += `
+          <div class="quiz-option"
+               onclick="this.classList.add('${ok?'correct':'incorrect'}')">
+            ${opt}
+          </div>
+        `;
       });
     }
+
     if(q.type==="mc"){
-      q.opts.forEach((o,idx)=>{
-        html+=`<div class="quiz-option"
-          onclick="this.classList.add('${idx===q.a?'correct':'incorrect'}')">${o}</div>`;
+      q.opts.forEach((opt,idx)=>{
+        html += `
+          <div class="quiz-option"
+               onclick="this.classList.add('${idx===q.a?'correct':'incorrect'}')">
+            ${opt}
+          </div>
+        `;
       });
     }
-    html+=`</div>`;
+
+    html += `</div>`;
   });
 
-  html+=`</div>`;
+  html += `</div>`;
   document.getElementById("main-area").innerHTML = html;
 }
 
-window.onload = ()=>showWelcome(document.querySelector(".nav-item"));
+window.onload = () => showWelcome(document.querySelector('.nav-item'));
 </script>
 
 </body>
