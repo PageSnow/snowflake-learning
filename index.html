@@ -1469,3 +1469,180 @@ window.onload = () => showWelcome(document.querySelector('.nav-item'));
 </script>
 </body>
 </html>
+<script>
+// ─────────────────────────────────────────────
+// LABORATORIOS OFICIALES SNOWFLAKE
+// ─────────────────────────────────────────────
+const labs = {
+
+  lab1_interfaces: {
+    title: "Lab 1 · Interactuando con Snowflake",
+    difficulty: "easy",
+    description: "Explora Snowsight, Worksheets y Notebooks",
+    sections: [
+      {
+        type: "theory",
+        title: "Interfaces de Snowflake",
+        content: `
+          <p>Snowflake se gestiona desde <strong>Snowsight</strong>, que incluye:</p>
+          <ul>
+            <li>Object Browser</li>
+            <li>SQL Worksheets</li>
+            <li>Python Worksheets</li>
+            <li>Notebooks SQL + Python + Markdown</li>
+          </ul>
+          <div class="info-box">
+            Los Notebooks permiten mezclar SQL, Python y documentación en un solo flujo.
+          </div>
+        `
+      },
+      {
+        type: "exercise",
+        title: "Ejercicio · Ejecutar SQL",
+        instructions: "Ejecuta una consulta que devuelva la fecha actual.",
+        startingCode: "SELECT CURRENT_DATE();",
+        validation(code) {
+          return {
+            success: /current_date/i.test(code),
+            message: "✅ Consulta válida"
+          };
+        },
+        solution: "SELECT CURRENT_DATE();"
+      }
+    ]
+  },
+
+  lab2_identity_access: {
+    title: "Lab 2 · Identidad y Accesos",
+    difficulty: "medium",
+    description: "Roles, ownership y permisos",
+    sections: [
+      {
+        type: "theory",
+        title: "Roles y visibilidad",
+        content: `
+          <p>En Snowflake:</p>
+          <ul>
+            <li>Los roles determinan QUÉ puedes ver</li>
+            <li>El rol que CREA es propietario</li>
+            <li>USAGE permite visibilidad</li>
+          </ul>
+        `
+      },
+      {
+        type: "exercise",
+        title: "Ejercicio · Crear BD con rol",
+        instructions: "Crea una base de datos usando CREATE DATABASE.",
+        startingCode: "CREATE DATABASE mi_db;",
+        validation(code) {
+          const ok = /create\s+database/i.test(code);
+          return {
+            success: ok,
+            message: ok
+              ? "✅ Base de datos creada"
+              : "⚠️ Usa CREATE DATABASE"
+          };
+        },
+        solution: "CREATE DATABASE mi_db;"
+      }
+    ]
+  },
+
+  lab3_object_hierarchy: {
+    title: "Lab 3 · Jerarquía de Objetos",
+    difficulty: "medium",
+    description: "Databases, Schemas y SHOW",
+    sections: [
+      {
+        type: "theory",
+        title: "Jerarquía Snowflake",
+        content: `
+          <pre>
+DATABASE
+ └── SCHEMA
+     └── TABLE
+          </pre>
+        `
+      },
+      {
+        type: "exercise",
+        title: "Ejercicio · Exploración",
+        instructions: "Lista bases de datos disponibles.",
+        startingCode: "SHOW DATABASES;",
+        validation(code) {
+          return {
+            success: /show\s+databases/i.test(code),
+            message: "✅ Exploración correcta"
+          };
+        },
+        solution: "SHOW DATABASES;"
+      }
+    ]
+  }
+};
+</script>
+<div class="category">Laboratorios Oficiales</div>
+<div class="nav-item" onclick="loadLab('lab1_interfaces', this)">📓 Lab 1 · Interfaces</div>
+<div class="nav-item" onclick="loadLab('lab2_identity_access', this)">🔐 Lab 2 · Accesos</div>
+<div class="nav-item" onclick="loadLab('lab3_object_hierarchy', this)">🗂️ Lab 3 · Jerarquía</div>
+<script>
+function loadLab(labId, el) {
+  const lab = labs[labId];
+  if (!lab) return;
+
+  setActive(el);
+
+  let html = `
+    <div class="page-header">
+      <h1>${lab.title}</h1>
+      ${difficultyBadge(lab.difficulty)}
+      <span class="tag tag-lab">Laboratorio</span>
+    </div>
+  `;
+
+  lab.sections.forEach(section => {
+
+    if (section.type === "theory") {
+      html += `
+        <div class="card">
+          <h3>${section.title}</h3>
+          ${section.content}
+        </div>`;
+    }
+
+    if (section.type === "exercise") {
+      html += `
+        <div class="exercise-description">
+          <h3>${section.title}</h3>
+          <p>${section.instructions}</p>
+        </div>
+
+        <div class="sql-workspace">
+          <div class="editor-panel">
+            <div class="editor-header">
+              Editor SQL
+              <button class="btn-execute" onclick="executeLab('${labId}')">▶ Ejecutar</button>
+            </div>
+            <textarea id="lab-editor" class="sql-editor">${section.startingCode}</textarea>
+          </div>
+
+          <div class="results-panel">
+            <div class="results-header">Resultado</div>
+            <div id="lab-results" class="results-content">
+              <p style="color:var(--text-muted);text-align:center;">Ejecuta la consulta</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="solution-box" id="lab-solution">
+          <pre>${section.solution}</pre>
+        </div>
+      `;
+    }
+  });
+
+  document.getElementById("main-area").innerHTML = html;
+}
+</script>
+
+
